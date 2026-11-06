@@ -1,0 +1,701 @@
+{
+  "schemaVersion": 1,
+  "settings": {
+    "assistantName": "B.A.B",
+    "assistantSubtitle": "مساعد DANDY الذكي",
+    "brandName": "DANDY",
+    "welcomeMessage": "أهلاً بكِ في DANDY! ✨ أنا B.A.B مساعدكِ الذكي لمساعدتكِ في تصفح المنتجات، معرفة تفاصيل الشحن والتوصيل، أو سياسات المتجر. كيف أقدر أساعدكِ اليوم؟",
+    "searchPlaceholder": "ابحثي عن سؤالك (مثل: مدة التوصيل، الشحن المجاني، تتبع الطلب...)",
+    "supportPhone": "01038941005",
+    "supportWhatsapp": "201038941005",
+    "supportWhatsappText": "مرحبًا، أحتاج إلى مساعدة بخصوص متجر DANDY.",
+    "supportHours": "يوميًا من 10:00 صباحًا حتى 10:00 مساءً (بتوقيت القاهرة)",
+    "officialBaseUrl": "https://dandy-ebon.vercel.app",
+    "theme": {
+      "primary": "#fe5d9f",
+      "secondary": "#db2777",
+      "dark": "#38121d",
+      "background": "#fdf2f8",
+      "surface": "#ffffff"
+    },
+    "fallbackMessage": "عذرًا، لم أتمكن من العثور على إجابة دقيقة لسؤالك في قاعدة المعرفة الحالية.",
+    "noResultsMessage": "لم نجد نتائج مطابقة لبحثكِ. يمكنكِ تجربة كلمات بحث أخرى أو التحدث مباشرة مع خدمة عملاء DANDY عبر واتساب."
+  },
+  "categories": [
+    {
+      "id": "orders-shipping",
+      "title": "الطلبات والشحن",
+      "description": "مدة التوصيل، رسوم الشحن، الشحن المجاني وتتبع الطلبات",
+      "icon": "truck",
+      "order": 1,
+      "enabled": true
+    },
+    {
+      "id": "browse-products",
+      "title": "تصفح المنتجات",
+      "description": "أقسام العناية بالشعر، العناية بالجسم، العطور، والعناية بالبشرة",
+      "icon": "sparkles",
+      "order": 2,
+      "enabled": true
+    },
+    {
+      "id": "returns-exchanges",
+      "title": "الاسترجاع والاستبدال",
+      "description": "إجراءات فحص ومراجعة الشحنات والطلبات التالفة أو غير المطابقة",
+      "icon": "rotate-ccw",
+      "order": 3,
+      "enabled": true
+    },
+    {
+      "id": "special-offers",
+      "title": "العروض والخصومات",
+      "description": "العروض الخاصة، الخصومات الترويجية وتوفير الأسعار",
+      "icon": "tag",
+      "order": 4,
+      "enabled": true
+    },
+    {
+      "id": "account-login",
+      "title": "الحساب والتسجيل",
+      "description": "تسجيل الدخول، إنشاء حساب جديد ومتابعة بيانات الحساب",
+      "icon": "user",
+      "order": 5,
+      "enabled": true
+    },
+    {
+      "id": "payments",
+      "title": "الدفع وتأكيد الطلب",
+      "description": "طرق الدفع المتوفرة وتأكيد عمليات الشراء",
+      "icon": "credit-card",
+      "order": 6,
+      "enabled": true
+    },
+    {
+      "id": "contact-support",
+      "title": "خدمة العملاء وواتساب",
+      "description": "التواصل المباشر مع فريق دعم DANDY ومواعيد العمل الرسمية",
+      "icon": "message-circle",
+      "order": 7,
+      "enabled": true
+    }
+  ],
+  "articles": [
+    {
+      "id": "shipping-delivery-time",
+      "categoryId": "orders-shipping",
+      "title": "مدة التوصيل المتوقعة",
+      "question": "متى يصل طلبي بعد إتمامه؟",
+      "alternativeQuestions": [
+        "الشحنة هتوصل امتى؟",
+        "التوصيل بياخد كام يوم؟",
+        "ما هي مدة الشحن؟",
+        "وقت وصول الأوردر"
+      ],
+      "keywords": [
+        "الشحن",
+        "التوصيل",
+        "مدة الشحن",
+        "مدة التوصيل",
+        "ايام عمل",
+        "موعد الوصول"
+      ],
+      "synonyms": [
+        "ميعاد الطلب",
+        "وقت وصول الشحنة",
+        "هيوصل امتى",
+        "الاوردر"
+      ],
+      "answer": {
+        "text": "تتراوح مدة التوصيل المتوقعة لجميع الطلبات من يومين إلى خمسة أيام عمل (2-5 أيام عمل) بعد تأكيد الطلب من قبل فريق المتجر.",
+        "steps": [
+          "تأكيد الطلب وإعداده في المستودع فور استلامه.",
+          "تسليم الشحنة لشركة الشحن المعتمدة.",
+          "توصيل الطلب إلى عنوانكِ المسجل خلال 2-5 أيام عمل."
+        ],
+        "links": [
+          {
+            "title": "تتبع حالة طلبكِ",
+            "url": "https://dandy-ebon.vercel.app/track-order",
+            "isExternal": false
+          }
+        ]
+      },
+      "relatedIds": [
+        "shipping-fees",
+        "shipping-free",
+        "order-tracking"
+      ],
+      "enabled": true,
+      "order": 1
+    },
+    {
+      "id": "shipping-fees",
+      "categoryId": "orders-shipping",
+      "title": "تكلفة ورسوم الشحن",
+      "question": "كم تبلغ مصاريف الشحن لعنواني؟",
+      "alternativeQuestions": [
+        "كام مصاريف الشحن؟",
+        "تكلفة التوصيل لمحافظتي",
+        "سعر الشحن كام؟"
+      ],
+      "keywords": [
+        "مصاريف الشحن",
+        "رسوم الشحن",
+        "تكلفة التوصيل",
+        "سعر الشحن",
+        "المحافظات",
+        "الدفع"
+      ],
+      "synonyms": [
+        "كام الشحن",
+        "فلوس التوصيل",
+        "قيمة الشحن"
+      ],
+      "answer": {
+        "text": "تختلف رسوم الشحن باختلاف المحافظة التي يتم التوصيل إليها داخل جمهورية مصر العربية. يتم حساب تكلفة الشحن بدقة وبشكل تلقائي في سلة المشتريات وصفحة إتمام الطلب بناءً على المحافظة المحددة.",
+        "steps": [
+          "أضيفي المنتجات المرغوبة إلى سلة الشراء.",
+          "توجهي إلى صفحة إتمام الطلب وحددي المحافظة التابعة لعنوانكِ.",
+          "سيظهر لكِ السعر النهائي لخدمة التوصيل قبل تأكيد الطلب."
+        ],
+        "links": [
+          {
+            "title": "الانتقال إلى سلة المشتريات",
+            "url": "https://dandy-ebon.vercel.app/cart",
+            "isExternal": false
+          }
+        ]
+      },
+      "relatedIds": [
+        "shipping-delivery-time",
+        "shipping-free"
+      ],
+      "enabled": true,
+      "order": 2
+    },
+    {
+      "id": "shipping-free",
+      "categoryId": "orders-shipping",
+      "title": "الشحن المجاني",
+      "question": "كيف أحصل على شحن مجاني؟",
+      "alternativeQuestions": [
+        "هل يوجد شحن مجاني؟",
+        "الحد الأدنى للشحن المجاني",
+        "ازاي يجيلي شحن ببلاش؟"
+      ],
+      "keywords": [
+        "شحن مجاني",
+        "توصيل مجاني",
+        "2000",
+        "خصم الشحن",
+        "مجانا"
+      ],
+      "synonyms": [
+        "شحن ببلاش",
+        "فوق الالفين",
+        "عروض الشحن"
+      ],
+      "answer": {
+        "text": "يسري الشحن المجاني تلقائيًا على أي طلب عندما يتجاوز إجمالي المنتجات في سلة المشتريات مبلغ 2,000 جنيه مصري.",
+        "steps": [
+          "اختاري منتجاتكِ المفضلة بحيث يتجاوز الإجمالي 2,000 ج.م.",
+          "يتم تفعيل الشحن المجاني تلقائيًا في صفحة الدفع دون الحاجة لكوبون إضافي."
+        ],
+        "links": [
+          {
+            "title": "تصفح جميع المنتجات",
+            "url": "https://dandy-ebon.vercel.app/all-products",
+            "isExternal": false
+          },
+          {
+            "title": "العروض والخصومات الخاصة",
+            "url": "https://dandy-ebon.vercel.app/special-offers",
+            "isExternal": false
+          }
+        ]
+      },
+      "relatedIds": [
+        "shipping-delivery-time",
+        "shipping-fees"
+      ],
+      "enabled": true,
+      "order": 3
+    },
+    {
+      "id": "order-tracking",
+      "categoryId": "orders-shipping",
+      "title": "تتبع حالة الطلب",
+      "question": "كيف يمكنني تتبع طلبي؟",
+      "alternativeQuestions": [
+        "عايزة اتبع الاوردر بتاعي",
+        "فين شحنتي دلوقتي؟",
+        "متابعة مسار الشحنة",
+        "رابط التتبع"
+      ],
+      "keywords": [
+        "تتبع",
+        "متابعة الطلب",
+        "كود الفاتورة",
+        "حالة الشحنة",
+        "اين طلبي"
+      ],
+      "synonyms": [
+        "اتبع الاوردر",
+        "كود الشحنة",
+        "وصلت فين"
+      ],
+      "answer": {
+        "text": "يمكنكِ تتبع حالة طلبكِ مباشرة عبر صفحة تتبع الطلبات الرسمية في DANDY. كل ما تحتاجينه هو إدخال كود الفاتورة ورقم هاتف المستلم في الصفحة الرسمية.\n\nتنويه للخصوصية والأمان: لا تطلبي أو تدخلي أي أكواد فواتير أو أرقام هواتف داخل هذه المحادثة، فالتتبع يتم حصريًا وبأمان عبر الصفحة الرسمية.",
+        "steps": [
+          "افتحي صفحة تتبع الطلب الرسمية على موقع DANDY.",
+          "أدخلي كود الفاتورة المستلم في رسالة التأكيد.",
+          "أدخلي رقم الهاتف الخاص بالمستلم للاطلاع على الحالة المحدثة للشحنة."
+        ],
+        "links": [
+          {
+            "title": "صفحة تتبع الطلب الرسمية",
+            "url": "https://dandy-ebon.vercel.app/track-order",
+            "isExternal": false
+          }
+        ]
+      },
+      "relatedIds": [
+        "shipping-delivery-time",
+        "contact-support-team"
+      ],
+      "enabled": true,
+      "order": 4
+    },
+    {
+      "id": "products-hair-care",
+      "categoryId": "browse-products",
+      "title": "منتجات العناية بالشعر",
+      "question": "ما هي منتجات العناية بالشعر المتوفرة؟",
+      "alternativeQuestions": [
+        "قسم الشعر",
+        "عايزة منتجات للشعر",
+        "شامبو وسيروم وماسكات"
+      ],
+      "keywords": [
+        "شعر",
+        "عناية بالشعر",
+        "شامبو",
+        "سيروم",
+        "ماسكات",
+        "زيوت شعر",
+        "hair care"
+      ],
+      "synonyms": [
+        "تساقط الشعر",
+        "تغذية الشعر",
+        "منتجات للشعر"
+      ],
+      "answer": {
+        "text": "يقدم متجر DANDY تشكيلة متميزة ومختارة من أفضل منتجات العناية بالشعر لتغذية وترطيب وحماية خصلات شعركِ من التلف والتقصف.",
+        "steps": [],
+        "links": [
+          {
+            "title": "تصفح قسم العناية بالشعر",
+            "url": "https://dandy-ebon.vercel.app/category/hair-care",
+            "isExternal": false
+          }
+        ]
+      },
+      "relatedIds": [
+        "products-skin-care",
+        "products-body-care"
+      ],
+      "enabled": true,
+      "order": 1
+    },
+    {
+      "id": "products-body-care",
+      "categoryId": "browse-products",
+      "title": "منتجات العناية بالجسم",
+      "question": "أين أجد منتجات العناية بالجسم؟",
+      "alternativeQuestions": [
+        "عناية بالجسم",
+        "لوشن ومرطبات جسم",
+        "بودي كير",
+        "body care"
+      ],
+      "keywords": [
+        "جسم",
+        "عناية بالجسم",
+        "لوشن",
+        "مرطب",
+        "سكراب",
+        "body care"
+      ],
+      "synonyms": [
+        "ترطيب الجسم",
+        "معطر جسم"
+      ],
+      "answer": {
+        "text": "استكشفي مجموعة منتجات العناية بالجسم من DANDY لترطيب فائق وبشرة ناعمة بملمس مخملي.",
+        "steps": [],
+        "links": [
+          {
+            "title": "تصفح قسم العناية بالجسم",
+            "url": "https://dandy-ebon.vercel.app/category/body-care",
+            "isExternal": false
+          }
+        ]
+      },
+      "relatedIds": [
+        "products-fragrance",
+        "products-skin-care"
+      ],
+      "enabled": true,
+      "order": 2
+    },
+    {
+      "id": "products-fragrance",
+      "categoryId": "browse-products",
+      "title": "العطور والروائح الفاخرة",
+      "question": "ما هي تشكيلة العطور المتوفرة؟",
+      "alternativeQuestions": [
+        "عطور المتجر",
+        "برفانات",
+        "قسم العطور",
+        "fragrance"
+      ],
+      "keywords": [
+        "عطور",
+        "عطر",
+        "برفان",
+        "روائح",
+        "مسك",
+        "fragrance"
+      ],
+      "synonyms": [
+        "ريحة حلوة",
+        "عطور فرنسية"
+      ],
+      "answer": {
+        "text": "تألقي بأرقى النفحات العطرية مع تشكيلة العطور الحصرية من DANDY التي تمنحكِ إطلالة ساحرة تدوم طويلاً.",
+        "steps": [],
+        "links": [
+          {
+            "title": "تصفح قسم العطور الفاخرة",
+            "url": "https://dandy-ebon.vercel.app/category/fragrance",
+            "isExternal": false
+          }
+        ]
+      },
+      "relatedIds": [
+        "products-body-care"
+      ],
+      "enabled": true,
+      "order": 3
+    },
+    {
+      "id": "products-skin-care",
+      "categoryId": "browse-products",
+      "title": "منتجات العناية بالبشرة",
+      "question": "أين أجد منتجات العناية بالبشرة؟",
+      "alternativeQuestions": [
+        "عناية بالبشرة",
+        "سيروم للوجه",
+        "غسول ومرطب",
+        "skin care"
+      ],
+      "keywords": [
+        "بشرة",
+        "عناية بالبشرة",
+        "سيروم",
+        "غسول",
+        "كريم ترطيب",
+        "skin care"
+      ],
+      "synonyms": [
+        "نضارة الوجه",
+        "منتجات البشرة"
+      ],
+      "answer": {
+        "text": "مجموعة منتجات العناية بالبشرة من DANDY مصممة لمنح بشرتكِ النضارة، الحماية والترطيب العميق يومًا بعد يوم.",
+        "steps": [],
+        "links": [
+          {
+            "title": "تصفح قسم العناية بالبشرة",
+            "url": "https://dandy-ebon.vercel.app/category/skin-care",
+            "isExternal": false
+          }
+        ]
+      },
+      "relatedIds": [
+        "products-hair-care"
+      ],
+      "enabled": true,
+      "order": 4
+    },
+    {
+      "id": "returns-policy",
+      "categoryId": "returns-exchanges",
+      "title": "سياسة الاسترجاع والاستبدال",
+      "question": "ما هي سياسة الاسترجاع أو الاستبدال؟",
+      "alternativeQuestions": [
+        "عايزة ارجع منتج",
+        "كيف استبدل طلبي؟",
+        "لو المنتج تالف اعمل ايه؟",
+        "شروط الارجاع"
+      ],
+      "keywords": [
+        "استرجاع",
+        "استبدال",
+        "تالف",
+        "منتج خاطئ",
+        "ارجاع",
+        "استرداد"
+      ],
+      "synonyms": [
+        "تبديل الطلب",
+        "استرجاع الفلوس",
+        "لو بايظ"
+      ],
+      "answer": {
+        "text": "في حال استلامكِ منتجًا تالفًا أو غير مطابق لما قمتِ بطلبه، يُرجى التواصل الفوري مع فريق خدمة عملاء DANDY الرسمي لمراجعة الحالة والتحقق من تفاصيل الطلب وتوجيهكِ بالإجراء المتبع.\n\nتنويه: لا يتم وعد العميل باسترداد أو استبدال مالي فوري قبل مراجعة الحالة والتأكد منها من قِبل فريق الدعم.",
+        "steps": [
+          "احتفظي بالمنتج في حالته الأصلية وتغليفه.",
+          "التقطي صورًا واضحة للمنتج أو التلف إن وجد.",
+          "تواصلي مع فريق خدمة العملاء عبر واتساب أو صفحة اتصل بنا مع ذكر رقم طلبكِ."
+        ],
+        "links": [
+          {
+            "title": "صفحة اتصل بنا",
+            "url": "https://dandy-ebon.vercel.app/contact-us",
+            "isExternal": false
+          },
+          {
+            "title": "الشروط والأحكام",
+            "url": "https://dandy-ebon.vercel.app/terms",
+            "isExternal": false
+          }
+        ]
+      },
+      "relatedIds": [
+        "contact-support-team"
+      ],
+      "enabled": true,
+      "order": 1
+    },
+    {
+      "id": "special-offers-discounts",
+      "categoryId": "special-offers",
+      "title": "العروض والخصومات الحالية",
+      "question": "أين أجد العروض والخصومات المتاحة؟",
+      "alternativeQuestions": [
+        "في عروض دلوقتي؟",
+        "اكواد خصم",
+        "تخفيضات المتجر",
+        "عروض حصرية"
+      ],
+      "keywords": [
+        "عروض",
+        "خصم",
+        "تخفيضات",
+        "عروض خاصة",
+        "اوفرز",
+        "sale"
+      ],
+      "synonyms": [
+        "سيل",
+        "خصومات",
+        "عروض اليوم"
+      ],
+      "answer": {
+        "text": "يتم تحديث العروض الخاصة والخصومات الحصرية باستمرار في صفحة العروض الرسمية على موقع DANDY. زوري الصفحة للاطلاع على أحدث التخفيضات الترويجية المتاحة حاليًا.",
+        "steps": [],
+        "links": [
+          {
+            "title": "تصفح صفحة العروض الخاصة",
+            "url": "https://dandy-ebon.vercel.app/special-offers",
+            "isExternal": false
+          }
+        ]
+      },
+      "relatedIds": [
+        "shipping-free"
+      ],
+      "enabled": true,
+      "order": 1
+    },
+    {
+      "id": "account-manage",
+      "categoryId": "account-login",
+      "title": "تسجيل الدخول وإدارة الحساب",
+      "question": "كيف يمكنني تسجيل الدخول أو إنشاء حساب؟",
+      "alternativeQuestions": [
+        "ازاي اعمل اكونت؟",
+        "تسجيل دخول DANDY",
+        "نسيت كلمة السر",
+        "تعديل بيانات الحساب"
+      ],
+      "keywords": [
+        "حساب",
+        "تسجيل الدخول",
+        "انشاء حساب",
+        "اكونت",
+        "بياناتي",
+        "login"
+      ],
+      "synonyms": [
+        "افتح حسابي",
+        "تسجيل جديد"
+      ],
+      "answer": {
+        "text": "يمكنكِ تسجيل الدخول إلى حسابكِ الشخصي أو إنشاء حساب جديد بكل سهولة لمتابعة طلباتكِ وحفظ بيانات الشحن الخاصة بكِ عبر الروابط المباشرة التالية.",
+        "steps": [],
+        "links": [
+          {
+            "title": "تسجيل الدخول إلى حسابكِ",
+            "url": "https://dandy-ebon.vercel.app/account-login",
+            "isExternal": false
+          },
+          {
+            "title": "إنشاء حساب جديد",
+            "url": "https://dandy-ebon.vercel.app/account-signup",
+            "isExternal": false
+          },
+          {
+            "title": "صفحة الحساب الشخصي",
+            "url": "https://dandy-ebon.vercel.app/account",
+            "isExternal": false
+          }
+        ]
+      },
+      "relatedIds": [
+        "order-tracking"
+      ],
+      "enabled": true,
+      "order": 1
+    },
+    {
+      "id": "payment-info",
+      "categoryId": "payments",
+      "title": "طرق الدفع المتوفرة",
+      "question": "كيف يتم الدفع وتأكيد الطلب؟",
+      "alternativeQuestions": [
+        "طرق الدفع المتاحة",
+        "هل يوجد دفع عند الاستلام؟",
+        "الدفع اونلاين بالفيزا"
+      ],
+      "keywords": [
+        "دفع",
+        "طرق الدفع",
+        "كاش",
+        "فيزا",
+        "عند الاستلام",
+        "payment"
+      ],
+      "synonyms": [
+        "فلوس الطلب",
+        "طريقة السداد"
+      ],
+      "answer": {
+        "text": "تظهر خيارات الدفع المتاحة لعنوانكِ بالتفصيل أثناء مرحلة إتمام الطلب في سلة المشتريات وفقًا للنظام المعتمد على المتجر. يمكنكِ مراجعة واختيار طريقة الدفع الأنسب لكِ قبل إتمام الشراء النهائي.",
+        "steps": [
+          "أضيفي مشترياتكِ إلى السلة.",
+          "اضغطي على إتمام الطلب وحددي عنوانكِ بدقة.",
+          "اختاري من خيارات الدفع المتاحة أمامكِ في شاشة الدفع."
+        ],
+        "links": [
+          {
+            "title": "الانتقال إلى سلة المشتريات",
+            "url": "https://dandy-ebon.vercel.app/cart",
+            "isExternal": false
+          }
+        ]
+      },
+      "relatedIds": [
+        "shipping-fees"
+      ],
+      "enabled": true,
+      "order": 1
+    },
+    {
+      "id": "contact-support-team",
+      "categoryId": "contact-support",
+      "title": "التواصل مع خدمة العملاء ومواعيد العمل",
+      "question": "كيف أتواصل مباشرة مع خدمة العملاء؟",
+      "alternativeQuestions": [
+        "رقم خدمة العملاء",
+        "عايزة اكلم حد من الدعم",
+        "مواعيد العمل",
+        "تواصل واتساب",
+        "رقم تليفون المتجر"
+      ],
+      "keywords": [
+        "خدمة العملاء",
+        "واتساب",
+        "تواصل",
+        "رقم",
+        "مواعيد العمل",
+        "دعم فني",
+        "whatsapp"
+      ],
+      "synonyms": [
+        "تليفون",
+        "اتصال",
+        "كلمني"
+      ],
+      "answer": {
+        "text": "يسعد فريق خدمة عملاء DANDY بمساعدتكِ دائمًا! يمكنكِ التواصل المباشر والسريع عبر تطبيق واتساب أو الاتصال على الرقم المخصص.\n\nمواعيد العمل: يوميًا من الساعة 10:00 صباحًا وحتى 10:00 مساءً بتوقيت القاهرة.",
+        "steps": [
+          "الرقم الرسمي: 01038941005",
+          "محادثة واتساب الفورية متاحة بنقرة واحدة أدناه."
+        ],
+        "links": [
+          {
+            "title": "محادثة واتساب الرسمية (01038941005)",
+            "url": "https://wa.me/201038941005?text=%D9%85%D8%B1%D8%AD%D8%A8%D9%8B%D8%A7%D8%8C%20%D8%A3%D8%AD%D8%AA%D8%A7%D8%AC%20%D8%A5%D9%84%D9%89%20%D9%85%D8%B3%D8%A7%D8%B9%D8%AF%D8%A9%20%D8%A8%D8%AE%D8%B5%D9%88%D8%B5%20%D9%85%D8%AA%D8%AC%D8%B1%20DANDY.",
+            "isExternal": true
+          },
+          {
+            "title": "صفحة اتصل بنا الرسمية",
+            "url": "https://dandy-ebon.vercel.app/contact-us",
+            "isExternal": false
+          }
+        ]
+      },
+      "relatedIds": [
+        "shipping-delivery-time",
+        "returns-policy"
+      ],
+      "enabled": true,
+      "order": 1
+    }
+  ],
+  "quickReplies": [
+    {
+      "id": "qr-shipping-time",
+      "label": "🚚 مدة التوصيل",
+      "articleId": "shipping-delivery-time"
+    },
+    {
+      "id": "qr-free-shipping",
+      "label": "🎁 الشحن المجاني",
+      "articleId": "shipping-free"
+    },
+    {
+      "id": "qr-track-order",
+      "label": "📍 تتبع الطلب",
+      "articleId": "order-tracking"
+    },
+    {
+      "id": "qr-offers",
+      "label": "✨ العروض الحالية",
+      "articleId": "special-offers-discounts"
+    },
+    {
+      "id": "qr-whatsapp",
+      "label": "💬 دعم واتساب",
+      "action": "whatsapp"
+    }
+  ],
+  "fallback": {
+    "title": "لم يتم العثور على إجابة محددة",
+    "text": "عذرًا، لا تتوفر حاليًا إجابة مسجلة لهذا الاستفسار في قاعدة البيانات. يمكنكِ العودة إلى القائمة الرئيسية لتصفح الأقسام أو التواصل المباشر مع موظف خدمة العملاء عبر واتساب لمساعدتكِ فورًا.",
+    "whatsappPrompt": "تواصل مع موظف خدمة عملاء DANDY عبر واتساب"
+  }
+}

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>B.A.B — Beauty Assistant Bot | DANDY</title>
+  <meta name="description" content="A structured, rule-based customer-support assistant widget and local administration dashboard for DANDY beauty store.">
+  <meta property="og:title" content="B.A.B — Beauty Assistant Bot">
+  <meta property="og:description" content="A structured, rule-based customer-support assistant widget and local administration dashboard for DANDY beauty store.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;600;700;800;900&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/dashboard/dashboard.css">
+  <style>
+    .portal-nav-bar {
+      background: var(--dandy-dark);
+      border-bottom: 2px solid var(--dandy-secondary);
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #ffffff;
+      position: sticky;
+      top: 0;
+      z-index: 9999;
+      box-shadow: 0 4px 20px rgba(56, 18, 29, 0.25);
+    }
+
+    .portal-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #ffffff;
+    }
+
+    .portal-brand-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--dandy-primary) 0%, var(--dandy-secondary) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 16px;
+      box-shadow: 0 2px 8px rgba(219, 39, 119, 0.4);
+    }
+
+    .portal-tabs {
+      display: flex;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 4px;
+      border-radius: 12px;
+    }
+
+    .portal-tab-btn {
+      background: none;
+      border: none;
+      color: #e5e7eb;
+      padding: 7px 16px;
+      border-radius: 8px;
+      font-family: var(--dandy-font);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .portal-tab-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+    }
+
+    .portal-tab-btn.active {
+      background: linear-gradient(135deg, var(--dandy-primary) 0%, var(--dandy-secondary) 100%);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(219, 39, 119, 0.3);
+    }
+
+    .portal-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .portal-view-container {
+      width: 100%;
+      height: calc(100vh - 58px);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .portal-view-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: none;
+    }
+
+    .portal-view-frame.active {
+      display: block;
+    }
+
+    /* Integration Guide Tab */
+    .portal-guide-view {
+      display: none;
+      height: 100%;
+      overflow-y: auto;
+      background: #faf5f8;
+      padding: 32px 24px;
+    }
+
+    .portal-guide-view.active {
+      display: block;
+    }
+
+    .guide-card {
+      max-width: 900px;
+      margin: 0 auto 24px;
+      background: #ffffff;
+      border-radius: 20px;
+      border: 1px solid #f3e8ee;
+      padding: 28px;
+      box-shadow: 0 4px 15px rgba(56, 18, 29, 0.05);
+    }
+
+    .guide-card h3 {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--dandy-dark);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .code-block {
+      background: #1e1e2e;
+      color: #f8f8f2;
+      padding: 16px;
+      border-radius: 12px;
+      font-family: Consolas, Monaco, "Courier New", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      direction: ltr;
+      text-align: left;
+      overflow-x: auto;
+      margin: 12px 0;
+      border: 1px solid #313244;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Master Portal Navigation Bar -->
+  <header class="portal-nav-bar">
+    <a href="/index.html" class="portal-brand">
+      <div class="portal-brand-badge">B</div>
+      <div>
+        <div style="font-weight: 800; font-size: 15px; letter-spacing: -0.2px;">B.A.B — Beauty Assistant Bot</div>
+        <div style="font-size: 10.5px; color: var(--dandy-border);">نظام الدعم الفني الذكي المعتمد لمتجر DANDY</div>
+      </div>
+    </a>
+
+    <div class="portal-tabs">
+      <button class="portal-tab-btn active" data-view="dashboard">
+        <span>🛠️</span>
+        <span>لوحة التحكم المحلية (Dashboard)</span>
+      </button>
+
+      <button class="portal-tab-btn" data-view="preview">
+        <span>🛍️</span>
+        <span>معاينة متجر DANDY (Store Preview)</span>
+      </button>
+
+      <button class="portal-tab-btn" data-view="guide">
+        <span>📖</span>
+        <span>دليل التثبيت والربط (Integration)</span>
+      </button>
+    </div>
+
+    <div class="portal-actions">
+      <a href="/dashboard/index.html" target="_blank" class="btn btn-secondary btn-sm" title="فتح لوحة التحكم في نافذة جديدة">
+        ↗️ لوحة التحكم
+      </a>
+      <a href="/preview/index.html" target="_blank" class="btn btn-primary btn-sm" title="فتح معاينة المتجر في نافذة جديدة">
+        🛍️ المتجر المستقل
+      </a>
+    </div>
+  </header>
+
+  <!-- View Switcher Container -->
+  <main class="portal-view-container">
+    
+    <!-- View 1: Local Admin Dashboard -->
+    <iframe src="/dashboard/index.html" class="portal-view-frame active" id="frame-dashboard" title="لوحة التحكم المحلية"></iframe>
+
+    <!-- View 2: Standalone DANDY Storefront Preview -->
+    <iframe src="/preview/index.html" class="portal-view-frame" id="frame-preview" title="معاينة متجر DANDY"></iframe>
+
+    <!-- View 3: Integration and Deployment Guide -->
+    <div class="portal-guide-view" id="guide-view">
+      
+      <div class="guide-card">
+        <h3>📋 نظرة عامة على المشروع والهندسة البرمجية</h3>
+        <p style="font-size: 14px; line-height: 1.7; color: var(--dandy-dark);">
+          <strong>B.A.B (Beauty Assistant Bot)</strong> هو مساعد خدمة عملاء رقمي قائم على القواعد المعتمدة (Rule-based) مخصص لمتجر <strong>DANDY</strong> لمستحضرات التجميل والعناية.
+        </p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px;">
+          <div style="background: var(--dandy-bg); padding: 12px 14px; border-radius: 12px; border: 1px solid var(--dandy-border);">
+            <strong>🚫 خالٍ تماماً من الذكاء الاصطناعي التوليدي:</strong>
+            <p style="font-size: 12px; color: var(--dandy-muted); margin-top: 3px;">لا يقوم باختراع أي إجابات أو الاعتماد على نماذج خارجية أو رسوم اشتراكات.</p>
+          </div>
+          <div style="background: var(--dandy-bg); padding: 12px 14px; border-radius: 12px; border: 1px solid var(--dandy-border);">
+            <strong>⚡ محرك بحث عربي محلي 100%:</strong>
+            <p style="font-size: 12px; color: var(--dandy-muted); margin-top: 3px;">تطبيع الحروف العربية، تجاهل التشكيل والتطويل، وتسامح مع الأخطاء الإملائية الشائعة.</p>
+          </div>
+          <div style="background: var(--dandy-bg); padding: 12px 14px; border-radius: 12px; border: 1px solid var(--dandy-border);">
+            <strong>🛡️ مكون ويب أصيل (Shadow DOM):</strong>
+            <p style="font-size: 12px; color: var(--dandy-muted); margin-top: 3px;">عزل كامل للأنماط والـ CSS بحيث لا يؤثر على مظهر متجر DANDY الأصلي ولا يتأثر به.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-card">
+        <h3>🚀 خطوات ربط المساعد بمشروع DANDY الفعلي</h3>
+        <p style="font-size: 13.5px; line-height: 1.6; color: var(--dandy-dark);">
+          لإدراج B.A.B في متجر DANDY لاحقاً دون تعديل كود جافاسكريبت أو فايربيس الأصلي، يتم نسخ الملفات الجاهزة إلى مجلد الـ assets:
+        </p>
+
+        <h4 style="font-size: 14px; margin-top: 16px; color: var(--dandy-secondary);">1. هيكل المجلدات النهائي في مشروع DANDY:</h4>
+        <div class="code-block">public/
+└── assets/
+    └── bab/
+        ├── widget/
+        │   ├── bab-widget.js
+        │   └── bab-widget.css
+        │
+        └── data/
+            └── knowledge.json</div>
+
+        <h4 style="font-size: 14px; margin-top: 16px; color: var(--dandy-secondary);">2. إدراج المكون في ملف القالب العام (BaseLayout.astro):</h4>
+        <p style="font-size: 13px; color: var(--dandy-muted);">يتم إضافة السطرين التاليين فقط قبل إغلاق وسم <code>&lt;/body&gt;</code>:</p>
+        <div class="code-block">&lt;!-- DANDY B.A.B Customer Support Assistant Widget --&gt;
+&lt;dandy-bab-widget
+  knowledge-src="/assets/bab/data/knowledge.json"&gt;
+&lt;/dandy-bab-widget&gt;
+
+&lt;script
+  type="module"
+  src="/assets/bab/widget/bab-widget.js"&gt;
+&lt;/script&gt;</div>
+
+        <h4 style="font-size: 14px; margin-top: 16px; color: var(--dandy-secondary);">3. تموضع الزر وعدم التعارض:</h4>
+        <p style="font-size: 13px; line-height: 1.6;">
+          تم تصميم المساعد بحيث يطفو في <strong>أسفل اليسار (Bottom-Left)</strong> مع مسافة أمان رأسية تلقائية على الهواتف المحمولة لعدم التعارض مع شريط التنقل السفلي لمتجر DANDY، ومع زر واتساب الدائم العائم في <strong>أسفل اليمين (Bottom-Right)</strong>.
+        </p>
+      </div>
+
+      <div class="guide-card">
+        <h3>💻 تشغيل المشروع محلياً (Local Running)</h3>
+        <p style="font-size: 13.5px; line-height: 1.6;">
+          المشروع خفيف جداً ولا يتطلب خادماً خلفياً أو تثبيت أطر عمل ثقيلة. لتشغيله محلياً عبر أي خادم ويب ثابت (مثل Python أو Node):
+        </p>
+        <div class="code-block"># باستخدام بايثون 3 (موصى به لمستخدمي Windows / Mac / Linux):
+python -m http.server 8000
+
+# أو باستخدام Node.js npx serve:
+npx serve .
+
+# ثم افتحي المتصفح على:
+http://localhost:8000</div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+    const tabs = document.querySelectorAll('.portal-tab-btn');
+    const frameDashboard = document.getElementById('frame-dashboard');
+    const framePreview = document.getElementById('frame-preview');
+    const guideView = document.getElementById('guide-view');
+
+    tabs.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+
+        const view = btn.getAttribute('data-view');
+        frameDashboard.classList.remove('active');
+        framePreview.classList.remove('active');
+        guideView.classList.remove('active');
+
+        if (view === 'dashboard') {
+          frameDashboard.classList.add('active');
+        } else if (view === 'preview') {
+          framePreview.classList.add('active');
+        } else if (view === 'guide') {
+          guideView.classList.add('active');
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

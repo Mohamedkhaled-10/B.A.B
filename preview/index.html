@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DANDY | المتجر الإلكتروني للعناية والجمال</title>
+  <meta name="description" content="متجر DANDY الرسمي لمنتجات العناية بالشعر، العناية بالجسم، العطور، والعناية بالبشرة في مصر.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;600;700;800;900&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #fe5d9f;
+      --secondary: #db2777;
+      --dark: #38121d;
+      --bg: #fdf2f8;
+      --surface: #ffffff;
+      --border: #fbcfe8;
+      --font: "Alexandria", "Cairo", system-ui, -apple-system, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font);
+      direction: rtl;
+      text-align: right;
+      background-color: #faf7f9;
+      color: #1f2937;
+      line-height: 1.6;
+      padding-bottom: 90px; /* Space for mobile nav */
+    }
+
+    /* Top switcher banner for admin preview */
+    .admin-preview-bar {
+      background: #111827;
+      color: #f3f4f6;
+      padding: 8px 16px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .admin-preview-bar a {
+      color: #fbcfe8;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .admin-preview-bar a:hover {
+      text-decoration: underline;
+    }
+
+    /* Store Announcement Bar */
+    .store-announcement {
+      background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+      color: #ffffff;
+      padding: 8px 16px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+
+    /* Store Header */
+    .store-header {
+      background: #ffffff;
+      border-bottom: 1px solid #f3e8ee;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .store-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--dark);
+    }
+
+    .store-logo-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 900;
+      box-shadow: 0 4px 12px rgba(219, 39, 119, 0.3);
+    }
+
+    .store-logo-text h1 {
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+    }
+
+    .store-logo-text span {
+      font-size: 11px;
+      color: var(--secondary);
+      font-weight: 700;
+    }
+
+    .store-nav {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      list-style: none;
+    }
+
+    .store-nav a {
+      text-decoration: none;
+      color: var(--dark);
+      font-size: 13.5px;
+      font-weight: 700;
+      transition: color 0.2s;
+    }
+
+    .store-nav a:hover, .store-nav a.highlight {
+      color: var(--secondary);
+    }
+
+    .store-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .store-action-btn {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--dark);
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 12.5px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .store-action-btn:hover {
+      background: #ffffff;
+      border-color: var(--secondary);
+      color: var(--secondary);
+    }
+
+    /* Hero Banner */
+    .store-hero {
+      background: linear-gradient(135deg, #38121d 0%, #57172b 50%, #db2777 100%);
+      color: #ffffff;
+      padding: 60px 24px;
+      border-radius: 0 0 32px 32px;
+      margin-bottom: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .store-hero-content {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .store-hero-tag {
+      display: inline-block;
+      background: rgba(254, 93, 159, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 4px 14px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .store-hero h2 {
+      font-size: 34px;
+      font-weight: 900;
+      line-height: 1.3;
+      margin-bottom: 16px;
+    }
+
+    .store-hero p {
+      font-size: 15px;
+      color: #fdf2f8;
+      max-width: 600px;
+      margin: 0 auto 24px;
+      opacity: 0.95;
+    }
+
+    .store-hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .store-btn-main {
+      background: #ffffff;
+      color: var(--dark);
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      text-decoration: none;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s;
+    }
+
+    .store-btn-main:hover {
+      transform: translateY(-2px);
+    }
+
+    .store-btn-outline {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #ffffff;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    /* Main Container */
+    .store-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Info Badges Row */
+    .store-info-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .store-info-card {
+      background: #ffffff;
+      padding: 18px 20px;
+      border-radius: 16px;
+      border: 1px solid #f3e8ee;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 2px 8px rgba(56, 18, 29, 0.04);
+    }
+
+    .store-info-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--bg);
+      color: var(--secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .store-info-text h3 {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--dark);
+    }
+
+    .store-info-text p {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    /* Product Grid */
+    .section-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--dark);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 20px;
+      margin-bottom: 50px;
+    }
+
+    .product-card {
+      background: #ffffff;
+      border-radius: 18px;
+      border: 1px solid #f3e8ee;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(56, 18, 29, 0.04);
+      transition: all 0.25s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(219, 39, 119, 0.12);
+      border-color: var(--primary);
+    }
+
+    .product-thumb {
+      height: 190px;
+      background: linear-gradient(135deg, #fff0f6 0%, #fce7f3 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 44px;
+      position: relative;
+    }
+
+    .product-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: var(--secondary);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .product-body {
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .product-category {
+      font-size: 11px;
+      color: var(--secondary);
+      font-weight: 700;
+    }
+
+    .product-title {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: var(--dark);
+      margin: 4px 0 8px;
+    }
+
+    .product-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed #f3e8ee;
+    }
+
+    .product-price {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--dark);
+    }
+
+    .product-add-btn {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--secondary);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .product-add-btn:hover {
+      background: var(--secondary);
+      color: #ffffff;
+    }
+
+    /* Fixed DANDY WhatsApp Floating Button on Bottom-Right */
+    .dandy-whatsapp-float {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #25d366;
+      color: #ffffff;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+      z-index: 9999;
+      text-decoration: none;
+      transition: transform 0.2s;
+    }
+
+    .dandy-whatsapp-float:hover {
+      transform: scale(1.08);
+    }
+
+    .dandy-whatsapp-float svg {
+      width: 28px;
+      height: 28px;
+      fill: currentColor;
+    }
+
+    /* Fixed Mobile Bottom Navigation Bar (as exists on DANDY) */
+    .dandy-mobile-bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border-top: 1px solid #e5e7eb;
+      padding: 8px 16px;
+      z-index: 9000;
+      justify-content: space-around;
+      box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .dandy-mobile-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #6b7280;
+      text-decoration: none;
+      gap: 3px;
+    }
+
+    .dandy-mobile-nav-item.active {
+      color: var(--secondary);
+    }
+
+    @media (max-width: 640px) {
+      .dandy-mobile-bottom-nav {
+        display: flex;
+      }
+      .store-nav {
+        display: none;
+      }
+      .dandy-whatsapp-float {
+        bottom: 84px; /* Offset above mobile bar */
+        right: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Preview Switcher Bar -->
+  <aside class="admin-preview-bar">
+    <span>💡 وضع المعاينة التفاعلية لمتجر DANDY</span>
+    <div style="display: flex; gap: 14px;">
+      <a href="/dashboard/index.html">🛠️ الانتقال للوحة التحكم (Dashboard)</a>
+      <a href="/index.html">🏠 البوابة الرئيسية</a>
+    </div>
+  </aside>
+
+  <!-- Store Announcement Bar -->
+  <div class="store-announcement">
+    ✨ شحن مجاني لجميع الطلبات فوق 2,000 ج.م في كافة المحافظات | توصيل سريع خلال 2-5 أيام عمل
+  </div>
+
+  <!-- Store Header -->
+  <header class="store-header">
+    <a href="https://dandy-ebon.vercel.app" class="store-logo" target="_blank" rel="noopener noreferrer">
+      <div class="store-logo-mark">D</div>
+      <div class="store-logo-text">
+        <h1>DANDY</h1>
+        <span>العناية والجمال الراقي</span>
+      </div>
+    </a>
+
+    <ul class="store-nav">
+      <li><a href="https://dandy-ebon.vercel.app/all-products" target="_blank" rel="noopener noreferrer">جميع المنتجات</a></li>
+      <li><a href="https://dandy-ebon.vercel.app/category/hair-care" target="_blank" rel="noopener noreferrer">العناية بالشعر</a></li>
+      <li><a href="https://dandy-ebon.vercel.app/category/skin-care" target="_blank" rel="noopener noreferrer">العناية بالبشرة</a></li>
+      <li><a href="https://dandy-ebon.vercel.app/category/fragrance" target="_blank" rel="noopener noreferrer">العطور</a></li>
+      <li><a href="https://dandy-ebon.vercel.app/category/body-care" target="_blank" rel="noopener noreferrer">العناية بالجسم</a></li>
+      <li><a href="https://dandy-ebon.vercel.app/special-offers" class="highlight" target="_blank" rel="noopener noreferrer">العروض الخاصة 🔥</a></li>
+      <li><a href="https://dandy-ebon.vercel.app/track-order" target="_blank" rel="noopener noreferrer">تتبع الطلب</a></li>
+    </ul>
+
+    <div class="store-actions">
+      <a href="https://dandy-ebon.vercel.app/account-login" class="store-action-btn" target="_blank" rel="noopener noreferrer">
+        👤 تسجيل الدخول
+      </a>
+      <a href="https://dandy-ebon.vercel.app/cart" class="store-action-btn" target="_blank" rel="noopener noreferrer">
+        🛒 السلة (0)
+      </a>
+    </div>
+  </header>
+
+  <!-- Hero Banner -->
+  <section class="store-hero">
+    <div class="store-hero-content">
+      <span class="store-hero-tag">✨ تشكيلة الخريف الفاخرة</span>
+      <h2>جمالكِ يستحق الأفضل مع DANDY</h2>
+      <p>اكتشفي أرقى مستحضرات العناية بالشعر، البشرة، الجسم والنفحات العطرية الاستثنائية بأسعار حصرية.</p>
+      <div class="store-hero-actions">
+        <a href="https://dandy-ebon.vercel.app/all-products" class="store-btn-main" target="_blank" rel="noopener noreferrer">تسوقي الآن</a>
+        <a href="https://dandy-ebon.vercel.app/special-offers" class="store-btn-outline" target="_blank" rel="noopener noreferrer">استكشفي العروض</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Store Content -->
+  <main class="store-container">
+    
+    <!-- Info Badges -->
+    <div class="store-info-row">
+      <div class="store-info-card">
+        <div class="store-info-icon">🚚</div>
+        <div class="store-info-text">
+          <h3>توصيل من 2 إلى 5 أيام عمل</h3>
+          <p>شحن سريع ومباشر لباب منزلكِ</p>
+        </div>
+      </div>
+
+      <div class="store-info-card">
+        <div class="store-info-icon">🎁</div>
+        <div class="store-info-text">
+          <h3>شحن مجاني فوق 2000 ج.م</h3>
+          <p>يطبق تلقائياً عند إتمام الطلب</p>
+        </div>
+      </div>
+
+      <div class="store-info-card">
+        <div class="store-info-icon">💬</div>
+        <div class="store-info-text">
+          <h3>خدمة عملاء 10ص - 10م</h3>
+          <p>فريق DANDY متاح للإجابة والمساعدة</p>
+        </div>
+      </div>
+
+      <div class="store-info-card">
+        <div class="store-info-icon">🔒</div>
+        <div class="store-info-text">
+          <h3>منتجات أصلية ومضمونة 100%</h3>
+          <p>مكونات مختارة بعناية فائقة</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Featured Products -->
+    <h2 class="section-title">✨ المنتجات الأكثر طلباً</h2>
+    <div class="products-grid">
+      
+      <div class="product-card">
+        <div class="product-thumb">
+          🧴
+          <span class="product-badge">الأكثر مبيعاً</span>
+        </div>
+        <div class="product-body">
+          <div>
+            <span class="product-category">العناية بالشعر</span>
+            <h3 class="product-title">سيروم تغذية وترميم الشعر الفائق</h3>
+            <p style="font-size: 12px; color: #6b7280;">يحمي الخصلات من التلف والحرارة ويمنحكِ لمعاناً حريرياً.</p>
+          </div>
+          <div class="product-footer">
+            <span class="product-price">480 ج.م</span>
+            <button class="product-add-btn">أضيفي للسلة</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-thumb">
+          ✨
+          <span class="product-badge">جديد</span>
+        </div>
+        <div class="product-body">
+          <div>
+            <span class="product-category">العناية بالبشرة</span>
+            <h3 class="product-title">سيروم النضارة الفائقة مع فيتامين C</h3>
+            <p style="font-size: 12px; color: #6b7280;">يعزز إشراقة وتوحيد لون البشرة بتركيبة خفيفة وسريعة الامتصاص.</p>
+          </div>
+          <div class="product-footer">
+            <span class="product-price">560 ج.م</span>
+            <button class="product-add-btn">أضيفي للسلة</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-thumb">
+          🌸
+        </div>
+        <div class="product-body">
+          <div>
+            <span class="product-category">العطور الفاخرة</span>
+            <h3 class="product-title">عطر الورد والمسك المخملي DANDY</h3>
+            <p style="font-size: 12px; color: #6b7280;">نفحات ساحرة من الأزهار والمسك الأبيض تدوم طوال اليوم.</p>
+          </div>
+          <div class="product-footer">
+            <span class="product-price">850 ج.م</span>
+            <button class="product-add-btn">أضيفي للسلة</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-thumb">
+          🌿
+        </div>
+        <div class="product-body">
+          <div>
+            <span class="product-category">العناية بالجسم</span>
+            <h3 class="product-title">لوشن ترطيب الجسم بزبدة الشيا والزيوت الطبيعية</h3>
+            <p style="font-size: 12px; color: #6b7280;">ترطيب عميق يدوم 24 ساعة بملمس غير دهني ورائحة منعشة.</p>
+          </div>
+          <div class="product-footer">
+            <span class="product-price">390 ج.م</span>
+            <button class="product-add-btn">أضيفي للسلة</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Official DANDY Floating WhatsApp Button (Bottom-Right) -->
+  <a href="https://wa.me/201038941005" target="_blank" rel="noopener noreferrer" class="dandy-whatsapp-float" aria-label="محادثة واتساب الرسمية">
+    <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.196 8.196 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24M8.53 7.33c-.16 0-.42.06-.64.3-.22.24-.85.83-.85 2.02 0 1.19.87 2.34.99 2.5.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.44-.59 1.64-1.16.2-.57.2-1.06.14-1.16-.06-.1-.22-.16-.46-.28-.24-.12-1.44-.71-1.66-.79-.22-.08-.38-.12-.54.12-.16.24-.62.79-.76.95-.14.16-.28.18-.52.06-.24-.12-1.01-.37-1.93-1.19-.71-.63-1.19-1.41-1.33-1.65-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42l-.46-.01Z"/></svg>
+  </a>
+
+  <!-- Mobile Fixed Bottom Navigation Bar -->
+  <nav class="dandy-mobile-bottom-nav">
+    <a href="#" class="dandy-mobile-nav-item active">
+      <span>🏠</span>
+      <span>الرئيسية</span>
+    </a>
+    <a href="https://dandy-ebon.vercel.app/all-products" class="dandy-mobile-nav-item">
+      <span>🛍️</span>
+      <span>المنتجات</span>
+    </a>
+    <a href="https://dandy-ebon.vercel.app/cart" class="dandy-mobile-nav-item">
+      <span>🛒</span>
+      <span>السلة</span>
+    </a>
+    <a href="https://dandy-ebon.vercel.app/account" class="dandy-mobile-nav-item">
+      <span>👤</span>
+      <span>حسابي</span>
+    </a>
+  </nav>
+
+  <!-- ========================================================================= -->
+  <!-- B.A.B Native Customer Support Widget (Floating on the Bottom-Left) -->
+  <!-- Note: Reads from /assets/bab/data/knowledge.json with graceful fallback -->
+  <!-- ========================================================================= -->
+  <dandy-bab-widget knowledge-src="/assets/bab/data/knowledge.json"></dandy-bab-widget>
+
+  <script type="module" src="/assets/bab/widget/bab-widget.js"></script>
+
+</body>
+</html>

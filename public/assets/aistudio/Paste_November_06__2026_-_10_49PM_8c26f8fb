@@ -1,0 +1,1012 @@
+# B.A.B — Beauty Assistant Bot
+## Final Project Build Specification
+
+Act as a senior frontend engineer, software architect, and UX designer. Build a complete, functional, standalone customer-support widget and a local dashboard for DANDY.
+
+This is an implementation task, not a planning task. Create the actual project files and working application. Do not stop after presenting a proposal or a wireframe.
+
+---
+
+# 1. Project Overview
+
+**Project name:** B.A.B  
+**Full name:** Beauty Assistant Bot  
+**Brand:** DANDY
+
+B.A.B is a structured, rule-based customer-support assistant for the DANDY beauty e-commerce store.
+
+Its purpose is to help customers navigate the store, find answers to common questions, understand store policies, access useful links, and contact customer support when necessary.
+
+### Critical concept
+
+B.A.B is NOT an AI chatbot.
+
+The customer-facing application must operate entirely through:
+- Predefined questions and answers.
+- Structured categories and topics.
+- Guided navigation.
+- Local keyword-based search.
+- Predefined suggestions and responses.
+- Internal links to DANDY pages.
+- A direct WhatsApp support option.
+
+**Do not integrate any AI model, LLM, Gemini API, OpenAI API, chatbot API, or external answer-generation service.**
+
+The application must never invent answers. It must only display information stored in its knowledge base.
+
+The code may be generated using AI Studio, but the final application's runtime must not depend on AI or any paid API.
+
+---
+
+# 2. Important Technical Requirements
+
+Build the application as an independent project that can later be integrated into the existing DANDY website.
+
+### Technology stack
+
+Use:
+- HTML5
+- CSS3
+- Vanilla JavaScript with ES Modules
+- Native Web Components
+- Shadow DOM for widget style isolation
+- JSON for the knowledge base
+- localStorage for the local dashboard's working data
+
+Avoid:
+- React
+- Next.js
+- Vue
+- Angular
+- TypeScript
+- Firebase
+- Supabase
+- Backend services
+- External databases
+- Paid APIs
+- Third-party chatbot libraries
+- Unnecessary dependencies
+
+Do not introduce a framework just because the development environment defaults to one. The final deliverable must be a lightweight, framework-independent widget.
+
+There must be no dependency on the existing DANDY website's JavaScript, Firebase instance, authentication, or global variables.
+
+The widget must be portable and independently functional.
+
+---
+
+# 3. Project Architecture
+
+Create a clean, organized structure similar to this:
+
+```text
+B.A.B/
+│
+├── index.html
+│
+├── dashboard/
+│   ├── dashboard.css
+│   └── dashboard.js
+│
+├── widget/
+│   ├── bab-widget.js
+│   └── bab-widget.css
+│
+├── data/
+│   └── knowledge.json
+│
+├── preview/
+│   └── index.html
+│
+├── README.md
+└── package.json (only if genuinely necessary)
+```
+
+You may improve the structure if there is a clear technical reason, but keep the project simple and maintainable.
+
+The dashboard, widget, preview, and knowledge base must have clearly separated responsibilities.
+
+---
+
+# 4. Customer-Facing Widget
+
+Build a polished, responsive customer-support widget.
+
+The widget should be implemented as a native Web Component:
+
+```html
+<dandy-bab-widget
+  knowledge-src="/assets/bab/data/knowledge.json">
+</dandy-bab-widget>
+
+<script
+  type="module"
+  src="/assets/bab/widget/bab-widget.js">
+</script>
+```
+
+The component must use Shadow DOM so its styles do not interfere with the DANDY website, and website styles do not unexpectedly break the widget.
+
+The widget must work without modifying the DANDY website's existing components or JavaScript.
+
+## 4.1 Visual identity
+
+Follow DANDY's existing visual identity:
+
+- Primary pink: `#fe5d9f`
+- Secondary pink: `#db2777`
+- Dark burgundy: `#38121d`
+- Light pink background: `#fdf2f8`
+- White surfaces
+- Soft shadows
+- Rounded corners
+- Clean spacing
+- Smooth, subtle animations
+
+Use a modern, premium beauty-brand aesthetic.
+
+The interface should feel friendly, elegant, lightweight, and professional.
+
+Use Arabic-friendly typography such as Alexandria or Cairo when available, with reliable system fallbacks.
+
+Do not create a new DANDY logo. Use simple text branding for B.A.B.
+
+## 4.2 Language and direction
+
+The entire customer-facing interface must be in Arabic.
+
+Use:
+- RTL layout.
+- Egyptian Arabic phrasing where appropriate.
+- Clear and polite language.
+- Short, understandable answers.
+- Consistent Arabic labels and navigation.
+
+Avoid robotic wording and overly formal sentences.
+
+## 4.3 Launcher and positioning
+
+Create a floating launcher button at the bottom-left of the website.
+
+Important positioning constraints:
+- The existing DANDY website has a WhatsApp floating button on the right.
+- The website also has a fixed bottom navigation bar on mobile.
+- B.A.B must not overlap either of them.
+- Use responsive positioning and appropriate bottom offsets.
+- The widget must remain accessible on small screens.
+
+## 4.4 Chat interface
+
+When opened, display a compact support panel containing:
+
+1. B.A.B header and assistant identity.
+2. A short welcome message.
+3. Main category buttons.
+4. A search input.
+5. Suggested questions.
+6. Conversation area.
+7. Back and home navigation.
+8. WhatsApp escalation option when appropriate.
+
+The interface should be comfortable on desktop and mobile.
+
+The chat panel must support:
+- Opening and closing.
+- Minimizing.
+- Returning to the previous menu.
+- Returning to the home menu.
+- Starting a new conversation.
+- Scrolling through previous responses in the current session.
+
+Do not save customer conversation history permanently.
+
+## 4.5 Guided navigation
+
+The primary interaction model is **Hybrid Guided Navigation**.
+
+Customers should be able to navigate through a structured sequence:
+
+```text
+Welcome
+   |
+   ├── Browse Products
+   |      ├── Hair Care
+   |      ├── Body Care
+   |      ├── Fragrance
+   |      └── Skin Care
+   |
+   ├── Orders and Shipping
+   |      ├── Delivery Time
+   |      ├── Shipping Fees
+   |      ├── Free Shipping
+   |      └── Track My Order
+   |
+   ├── Returns and Exchanges
+   |
+   ├── Offers
+   |
+   ├── Account and Login
+   |
+   ├── Payments
+   |
+   ├── Contact Support
+   |
+   └── Other Questions
+```
+
+This is an initial structure, not a rigid limitation.
+
+All categories and their content must be editable through the dashboard.
+
+Each category can contain topics, and each topic can lead to a predefined answer.
+
+Use clear buttons and navigation rather than requiring customers to type everything.
+
+---
+
+# 5. Local Search System
+
+Implement a fully local search engine using JavaScript.
+
+The customer can type a question, and B.A.B searches the locally loaded knowledge base.
+
+The search system must work without internet access after the widget and knowledge base have loaded.
+
+## 5.1 Search fields
+
+Search across:
+- Question titles.
+- Article titles.
+- Categories.
+- Keywords.
+- Synonyms.
+- Predefined questions.
+- Relevant answer text.
+
+## 5.2 Arabic normalization
+
+Support common Arabic writing variations.
+
+Normalize:
+- Remove Arabic diacritics.
+- Remove tatweel.
+- Normalize أ, إ, and آ to ا.
+- Normalize ى to ي.
+- Normalize repeated whitespace.
+- Ignore unnecessary punctuation.
+- Handle common spelling variations through editable synonyms.
+
+Do not apply overly aggressive normalization that could produce misleading results.
+
+## 5.3 Search behavior
+
+Implement:
+- Suggestions while typing.
+- Search result ranking.
+- Keyword matching.
+- Synonym matching.
+- Partial matching.
+- Basic typo tolerance using a lightweight local algorithm.
+- A useful no-results state.
+
+Prioritize matches in this order:
+
+1. Exact title or question matches.
+2. Keyword and synonym matches.
+3. Partial text matches.
+4. Broader relevant matches.
+
+Display a limited number of the most relevant results.
+
+When a customer selects a result, show the corresponding predefined answer.
+
+### No-results behavior
+
+If there is no relevant answer, show a friendly Arabic message explaining that the information is not currently available.
+
+Then offer:
+- Returning to the main menu.
+- Trying a different search.
+- Contacting DANDY support through WhatsApp.
+
+Never generate or guess an answer.
+
+---
+
+# 6. Knowledge Base
+
+The knowledge base is the central source of all customer-facing information.
+
+Store it in:
+
+`data/knowledge.json`
+
+Use a clear, documented, versioned JSON schema.
+
+A suggested structure:
+
+```json
+{
+  "schemaVersion": 1,
+  "settings": {
+    "assistantName": "B.A.B",
+    "brandName": "DANDY",
+    "welcomeMessage": "",
+    "searchPlaceholder": "",
+    "supportPhone": "01038941005",
+    "supportWhatsapp": "201038941005",
+    "supportHours": "10:00 - 22:00",
+    "theme": {
+      "primary": "#fe5d9f",
+      "secondary": "#db2777",
+      "dark": "#38121d",
+      "background": "#fdf2f8"
+    }
+  },
+  "categories": [],
+  "articles": [],
+  "quickReplies": [],
+  "fallback": {}
+}
+```
+
+You can improve this schema if necessary.
+
+## 6.1 Article structure
+
+Each article should support:
+
+- Unique ID.
+- Category ID.
+- Title.
+- Main question.
+- Alternative questions.
+- Keywords.
+- Synonyms.
+- Answer text.
+- Optional numbered steps.
+- Optional internal links.
+- Optional related article IDs.
+- Enabled/disabled status.
+- Display order.
+
+Example:
+
+```json
+{
+  "id": "shipping-delivery-time",
+  "categoryId": "orders-shipping",
+  "title": "مدة التوصيل",
+  "question": "متى يصل طلبي؟",
+  "alternativeQuestions": [
+    "الشحنة هتوصل امتى؟",
+    "التوصيل بياخد كام يوم؟"
+  ],
+  "keywords": [
+    "الشحن",
+    "التوصيل",
+    "مدة الشحن"
+  ],
+  "synonyms": [
+    "ميعاد الطلب",
+    "وقت وصول الشحنة"
+  ],
+  "answer": {
+    "text": "تتراوح مدة التوصيل المتوقعة من يومين إلى خمسة أيام عمل.",
+    "steps": [],
+    "links": []
+  },
+  "relatedIds": [],
+  "enabled": true,
+  "order": 1
+}
+```
+
+Keep the data model consistent across all articles.
+
+## 6.2 Initial knowledge content
+
+Populate the knowledge base with a useful initial set of categories, questions, and answers based on the verified information below.
+
+Do not fabricate missing policies, fees, payment methods, guarantees, or product details.
+
+Where information is uncertain, leave the content unconfigured and clearly identify it in the dashboard instead of displaying an invented customer-facing answer.
+
+### Official DANDY website
+
+Base URL:
+
+`https://dandy-ebon.vercel.app`
+
+Use these known routes:
+
+| Purpose | Route |
+|---|---|
+| All Products | `/all-products` |
+| Hair Care | `/category/hair-care` |
+| Body Care | `/category/body-care` |
+| Fragrance | `/category/fragrance` |
+| Skin Care | `/category/skin-care` |
+| Special Offers | `/special-offers` |
+| Shopping Cart | `/cart` |
+| Track Order | `/track-order` |
+| Help | `/help` |
+| Contact Us | `/contact-us` |
+| Customer Login | `/account-login` |
+| Customer Registration | `/account-signup` |
+| Customer Account | `/account` |
+| Terms | `/terms` |
+
+Use the official base URL when creating absolute internal links.
+
+### Shipping and delivery
+
+Verified information:
+
+- Expected delivery time: 2–5 business days.
+- Free shipping applies when the products subtotal exceeds EGP 2,000.
+- Shipping fees vary by governorate and should be confirmed at checkout.
+
+Important:
+
+There is an inconsistency between the existing help page's general shipping-fee information and the actual order-creation logic, which calculates fees by governorate.
+
+Therefore:
+- Never display one fixed shipping fee as universal.
+- Do not claim that all governorates have the same shipping price.
+- Direct customers to the cart or checkout for the final shipping cost.
+- Do not invent exceptions.
+
+### Order tracking
+
+Direct customers to:
+
+`/track-order`
+
+The existing tracking page asks customers to enter their invoice code and recipient phone number.
+
+Important privacy requirement:
+
+B.A.B must never ask customers to send invoice codes, phone numbers, or personal order information inside the chatbot.
+
+It should simply explain that order tracking is available through the official DANDY tracking page.
+
+Never connect the widget to order databases or Firebase.
+
+### Returns and exchanges
+
+Do not invent a general return period, refund guarantee, or exchange policy.
+
+For damaged or incorrect orders, explain that customers should contact official support so the case can be reviewed.
+
+Do not promise a refund or exchange before confirmation by the support team.
+
+Link to the contact page when appropriate.
+
+### Customer support
+
+Known support information:
+
+- WhatsApp: `01038941005`
+- WhatsApp URL: `https://wa.me/201038941005`
+- Working hours: Daily, 10:00 AM–10:00 PM Cairo time.
+
+Use the configured number and hours from the knowledge base instead of hardcoding them throughout the code.
+
+Create a clear WhatsApp support button.
+
+### Products and offers
+
+Provide links to the known product categories and offers page.
+
+Do not invent product availability, prices, ingredients, benefits, stock levels, or discounts.
+
+Products and their details should remain the responsibility of the existing DANDY website.
+
+---
+
+# 7. WhatsApp Escalation
+
+WhatsApp is the final support channel when B.A.B cannot answer a customer's question.
+
+Create a reusable function that generates the WhatsApp link from the knowledge-base settings.
+
+Use the configured WhatsApp number.
+
+A simple prefilled message can be:
+
+"مرحبًا، أحتاج إلى مساعدة بخصوص متجر DANDY."
+
+Do not automatically include customer personal information.
+
+The WhatsApp action must open the official WhatsApp link in a new tab safely.
+
+Display support working hours where relevant.
+
+---
+
+# 8. Local Dashboard
+
+This is a major part of the project.
+
+Build a fully functional **local dashboard** that allows me, as the developer and store administrator, to manage B.A.B without editing JSON manually.
+
+The dashboard must be a local tool. It does not require a backend, account, server database, Firebase, or paid service.
+
+### Critical architectural decision
+
+The dashboard's working data must be saved in the browser's localStorage.
+
+The dashboard must provide:
+- Automatic local saving.
+- Import JSON.
+- Export JSON.
+- Preview changes.
+- Validation.
+- Reset to original data.
+
+The production customer-facing widget must read the published `knowledge.json` file from its configured path.
+
+**Do not make the production widget depend on the administrator's localStorage.**
+
+Local dashboard changes are not automatically visible to website visitors.
+
+To publish changes, I will export the updated JSON file, replace the project's `data/knowledge.json` file with it, and deploy the updated website assets.
+
+Make this publishing workflow clear in the dashboard and README.
+
+## 8.1 Dashboard design
+
+Create a professional Arabic RTL admin interface using DANDY-inspired colors.
+
+The dashboard should be clean, organized, and practical.
+
+Include a sidebar or clear navigation menu with:
+
+1. Overview.
+2. Categories.
+3. Questions and Answers.
+4. Keywords and Synonyms.
+5. Quick Replies.
+6. Assistant Settings.
+7. Live Preview.
+8. Import / Export.
+
+The dashboard should not look like a generic template.
+
+Use clear typography, cards, tables where appropriate, and useful forms.
+
+## 8.2 Overview
+
+Display useful information such as:
+
+- Total categories.
+- Total articles.
+- Enabled articles.
+- Disabled articles.
+- Articles without keywords.
+- Articles with missing content.
+- Last local save indicator.
+- Current knowledge-base version.
+
+These figures must be calculated from actual local data.
+
+Do not add fake analytics, fake visitor counts, or misleading statistics.
+
+## 8.3 Category management
+
+Allow me to:
+
+- Add a category.
+- Edit a category.
+- Delete a category.
+- Change its title.
+- Change its description.
+- Change its icon.
+- Enable or disable it.
+- Reorder categories.
+
+Prevent accidental deletion when a category still contains articles. Offer a clear resolution, such as moving those articles to another category or deleting them after confirmation.
+
+## 8.4 Questions and Answers management
+
+Provide a usable article editor.
+
+I must be able to:
+
+- Create an article.
+- Edit an existing article.
+- Delete an article.
+- Change its title.
+- Change its category.
+- Edit the main question.
+- Add alternative questions.
+- Add keywords.
+- Add synonyms.
+- Edit the answer text.
+- Add numbered steps.
+- Add internal links.
+- Add related articles.
+- Enable or disable an article.
+- Change its display order.
+
+Use a comfortable editing experience.
+
+Do not require me to manually edit raw JSON.
+
+## 8.5 Keyword and synonym management
+
+Make it easy to manage search terms.
+
+I should be able to add multiple keywords and synonyms to each article.
+
+Support:
+- Adding items.
+- Removing items.
+- Editing items.
+- Preventing unnecessary duplicates.
+- Showing which article each term belongs to.
+
+## 8.6 Assistant settings
+
+Allow me to edit:
+
+- Assistant name.
+- Brand name.
+- Welcome message.
+- Search placeholder.
+- WhatsApp number.
+- Support phone number.
+- Support hours.
+- Theme colors.
+- Fallback message.
+- No-results message.
+
+The customer-facing widget must use these settings dynamically from the knowledge base.
+
+## 8.7 Live preview
+
+Include a live preview of the actual customer-facing widget.
+
+The preview must use the same widget component and styles as the production widget.
+
+When I change:
+- Welcome message.
+- Categories.
+- Articles.
+- Answers.
+- Settings.
+- Theme colors.
+
+The preview should update immediately without refreshing the page.
+
+Implement a safe public method such as:
+
+`setKnowledgeData(data)`
+
+on the Web Component for the local dashboard preview.
+
+This method must allow the dashboard to inject the currently edited local knowledge data into its preview instance.
+
+The production widget must still load its normal JSON file through `knowledge-src`.
+
+Do not create a completely separate mockup and pretend it is the real widget preview.
+
+## 8.8 Import and Export
+
+This is essential.
+
+### Export
+
+Create an Export button that downloads a valid file named:
+
+`knowledge.json`
+
+The exported file must contain all current dashboard changes and follow the defined schema.
+
+### Import
+
+Create an Import button that allows me to select an existing JSON knowledge file.
+
+Validate its structure before replacing the current working data.
+
+If the file is invalid:
+- Show a clear error.
+- Identify the problem.
+- Preserve the existing working data.
+
+If the file is valid:
+- Import its content.
+- Save it locally.
+- Refresh the dashboard and preview.
+
+### Local saving
+
+Use localStorage to preserve work between page refreshes.
+
+Provide:
+- A saved indicator.
+- A modified/unsaved indicator if applicable.
+- A reset-to-original-data action with confirmation.
+
+Explain that clearing browser data may remove the local dashboard's saved changes, so exporting backups regularly is important.
+
+---
+
+# 9. Data Validation and Reliability
+
+Implement validation for:
+
+- Missing article IDs.
+- Duplicate IDs.
+- Missing category references.
+- Empty titles.
+- Empty answers.
+- Invalid links.
+- Missing keywords.
+- Invalid JSON.
+- Unsupported schema versions.
+
+Show useful validation warnings in the dashboard.
+
+Do not silently discard invalid data.
+
+Do not export structurally invalid JSON.
+
+The widget must fail gracefully if the knowledge file cannot be loaded.
+
+Show a simple Arabic fallback message and a WhatsApp contact option where possible.
+
+---
+
+# 10. Security and Privacy
+
+Follow these rules strictly:
+
+1. Do not connect to Firebase.
+2. Do not read customer accounts.
+3. Do not read order records.
+4. Do not connect to payment systems.
+5. Do not collect personal information.
+6. Do not permanently store customer messages.
+7. Do not add analytics or tracking scripts.
+8. Do not expose credentials or secrets.
+9. Do not use arbitrary HTML from the JSON knowledge base.
+10. Render content safely using textContent and safe DOM operations.
+
+For links:
+- Only allow valid internal DANDY routes or approved external links.
+- Validate URLs.
+- Use `rel="noopener noreferrer"` for external links opened in a new tab.
+
+The chatbot is an informational navigation tool, not an order-management system.
+
+---
+
+# 11. User Experience and Accessibility
+
+Ensure:
+- Responsive layout.
+- Keyboard accessibility.
+- Visible focus states.
+- Accessible button labels.
+- Good text contrast.
+- Proper RTL behavior.
+- Appropriate mobile spacing.
+- Smooth but subtle transitions.
+- Reduced-motion support.
+- Clear empty states.
+- Clear error messages.
+
+Do not make the interface unnecessarily complicated.
+
+Avoid excessive animations, unnecessary effects, or oversized UI elements.
+
+---
+
+# 12. Performance
+
+Keep B.A.B lightweight.
+
+Requirements:
+- No heavy libraries.
+- No external AI calls.
+- No unnecessary network requests.
+- No continuous polling.
+- No unnecessary dependencies.
+- No loading of the complete DANDY product catalog.
+- Lazy loading where appropriate.
+- Efficient local search.
+- Minimal JavaScript footprint.
+
+The widget should load independently without blocking the main website.
+
+---
+
+# 13. DANDY Integration Requirements
+
+Do not modify the existing DANDY repository or its files during this project.
+
+Develop and test B.A.B independently.
+
+The intended integration method is copying the completed widget files into:
+
+```text
+public/assets/bab/
+```
+
+The resulting production structure should look like:
+
+```text
+public/
+└── assets/
+    └── bab/
+        ├── widget/
+        │   ├── bab-widget.js
+        │   └── bab-widget.css
+        │
+        └── data/
+            └── knowledge.json
+```
+
+Later, the only intended website integration should be adding the widget element and module script to the shared layout file:
+
+`src/layouts/BaseLayout.astro`
+
+For example:
+
+```html
+<dandy-bab-widget
+  knowledge-src="/assets/bab/data/knowledge.json">
+</dandy-bab-widget>
+
+<script
+  type="module"
+  src="/assets/bab/widget/bab-widget.js">
+</script>
+```
+
+Do not perform this integration now.
+
+Do not modify the original DANDY website.
+
+Do not deploy anything.
+
+Do not connect or push anything to the original DANDY GitHub repository.
+
+The README must explain the future integration process clearly.
+
+---
+
+# 14. Local Development and Running Instructions
+
+The project must be runnable locally with minimal setup.
+
+Prefer a static local development server rather than requiring a backend.
+
+Provide clear instructions for Windows users.
+
+For example, if Python is available:
+
+```bash
+python -m http.server 8000
+```
+
+Then open:
+
+`http://localhost:8000`
+
+Do not rely on opening HTML files directly through `file://` if the application requires fetch requests for JSON files.
+
+Document how to:
+- Run the dashboard.
+- Open the preview.
+- Edit knowledge-base content.
+- Export JSON.
+- Import JSON.
+- Restore default data.
+- Test the widget independently.
+
+---
+
+# 15. Testing and Acceptance Criteria
+
+Before considering the project complete, verify the following.
+
+## Widget tests
+
+- [ ] The launcher opens and closes the widget.
+- [ ] The widget works on desktop.
+- [ ] The widget works on mobile.
+- [ ] RTL layout is correct.
+- [ ] Categories are loaded from JSON.
+- [ ] Guided navigation works.
+- [ ] Back navigation works.
+- [ ] Home navigation works.
+- [ ] Local search works.
+- [ ] Arabic normalization works.
+- [ ] Search suggestions work.
+- [ ] Selecting a result displays the correct answer.
+- [ ] No-results handling works.
+- [ ] WhatsApp support opens the correct link.
+- [ ] Internal DANDY links work.
+- [ ] The widget does not interfere with website styles.
+- [ ] Missing JSON files are handled gracefully.
+
+## Dashboard tests
+
+- [ ] The dashboard opens locally.
+- [ ] Categories can be added, edited, and deleted.
+- [ ] Articles can be added, edited, and deleted.
+- [ ] Keywords and synonyms can be managed.
+- [ ] Settings can be edited.
+- [ ] Changes are saved to localStorage.
+- [ ] Changes remain after refreshing the dashboard.
+- [ ] The live preview reflects changes immediately.
+- [ ] JSON export works.
+- [ ] JSON import works.
+- [ ] Invalid JSON is rejected safely.
+- [ ] Reset functionality works with confirmation.
+- [ ] Validation warnings are displayed correctly.
+
+## Architecture tests
+
+- [ ] No AI API integration exists.
+- [ ] No Firebase integration exists.
+- [ ] No backend is required.
+- [ ] No paid service is required.
+- [ ] The production widget does not depend on dashboard localStorage.
+- [ ] The widget can be copied independently into another website.
+- [ ] The original DANDY project has not been modified.
+
+Do not mark a test as complete unless the corresponding functionality actually works.
+
+---
+
+# 16. Final Deliverables
+
+Produce a complete working project containing:
+
+1. The actual customer-facing B.A.B Web Component.
+2. Its CSS and responsive design.
+3. A structured initial `knowledge.json`.
+4. A functional local dashboard.
+5. Working category management.
+6. Working question-and-answer management.
+7. Keyword and synonym management.
+8. Editable assistant settings.
+9. A real live widget preview.
+10. Functional JSON import and export.
+11. Local autosaving.
+12. A standalone preview page.
+13. A clear README with running and integration instructions.
+
+Do not deliver only screenshots, mockups, pseudocode, or incomplete placeholder files.
+
+Every visible button must perform its intended function.
+
+Do not leave major features as TODOs.
+
+If a feature cannot be implemented reliably, explain the limitation instead of pretending it works.
+
+---
+
+# 17. Final Development Instructions
+
+Work in this order:
+
+1. Establish the project structure.
+2. Implement the knowledge-base schema and initial data.
+3. Build the customer-facing Web Component.
+4. Implement guided navigation.
+5. Implement the Arabic local search engine.
+6. Build the local dashboard.
+7. Implement editing and localStorage persistence.
+8. Implement JSON import and export.
+9. Connect the dashboard to the real widget preview.
+10. Test the complete application.
+11. Write the README.
+
+Prioritize reliability, maintainability, clean architecture, and a polished user experience over unnecessary complexity.
+
+**The final goal is a lightweight, independent, fully functional B.A.B customer-support widget with a local administration dashboard, ready for later integration into the DANDY website without modifying the original website during development.**

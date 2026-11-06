@@ -1,0 +1,6 @@
+{
+  "name": "B.A.B — Beauty Assistant Bot",
+  "description": "A structured, rule-based customer-support assistant widget and local administration dashboard for DANDY beauty store.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
