@@ -55,6 +55,175 @@ export function levenshteinDistance(a, b) {
   return row[b.length];
 }
 
+// Strict URL validation and sanitization for security
+export function isValidUrl(url) {
+  if (!url || typeof url !== 'string') return false;
+  const trimmed = url.trim().toLowerCase();
+  
+  // Block dangerous schemes and payloads
+  if (
+    trimmed.startsWith('javascript:') ||
+    trimmed.startsWith('data:') ||
+    trimmed.startsWith('vbscript:') ||
+    trimmed.startsWith('file:') ||
+    trimmed.startsWith('blob:') ||
+    trimmed.includes('javascript%3a') ||
+    trimmed.includes('vbscript%3a') ||
+    trimmed.includes('data%3a')
+  ) {
+    return false;
+  }
+
+  // Allow relative internal routes
+  if (url.startsWith('/')) {
+    // Disallow protocol-relative URLs (e.g. //attacker.com)
+    return !url.startsWith('//');
+  }
+
+  // Allow HTTPS / HTTP URLs
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === 'https:' || parsed.protocol === 'http:';
+  } catch {
+    return false;
+  }
+}
+
+export function sanitizeUrl(url, baseUrl = 'https://dandy-ebon.vercel.app') {
+  if (!isValidUrl(url)) return '#';
+  const trimmed = url.trim();
+  if (trimmed.startsWith('/')) {
+    const base = (baseUrl || 'https://dandy-ebon.vercel.app').replace(/\/+$/, '');
+    return `${base}${trimmed}`;
+  }
+  return trimmed;
+}
+
+export function validateKnowledgeData(data) {
+  const errors = [];
+  const warnings = [];
+
+  if (!data || typeof data !== 'object') {
+    return { isValid: false, errors: ['البيانات غير صالحة أو غير موجودة.'], warnings: [] };
+  }
+
+  if (typeof data.schemaVersion !== 'number' || data.schemaVersion <= 0) {
+    errors.push('رقم إصدار المخطط (schemaVersion) مفقود أو غير صحيح.');
+  }
+
+  if (!data.settings || typeof data.settings !== 'object') {
+    errors.push('كائن الإعدادات العامة (settings) مفقود.');
+  } else {
+    if (!data.settings.assistantName) warnings.push('اسم المساعد (assistantName) فارغ.');
+    if (!data.settings.brandName) warnings.push('اسم المتجر (brandName) فارغ.');
+    if (!data.settings.supportWhatsapp) warnings.push('رقم واتساب للدعم (supportWhatsapp) فارغ.');
+  }
+
+  if (!Array.isArray(data.categories)) {
+    errors.push('مصفوفة الأقسام (categories) مفقودة أو غير صالحة.');
+  } else if (data.categories.length === 0) {
+    errors.push('يجب وجود قسم واحد على الأقل في قاعدة المعرفة.');
+  }
+
+  const categoryIds = new Set();
+  if (Array.isArray(data.categories)) {
+    for (let i = 0; i < data.categories.length; i++) {
+      const cat = data.categories[i];
+      if (!cat || typeof cat !== 'object') {
+        errors.push(`القسم رقم ${i + 1} غير صالح.`);
+        continue;
+      }
+      if (!cat.id || typeof cat.id !== 'string' || !cat.id.trim()) {
+        errors.push(`القسم رقم ${i + 1} لا يحتوي على معرّف ID صالح.`);
+      } else if (categoryIds.has(cat.id)) {
+        errors.push(`معرّف القسم (${cat.id}) مكرر.`);
+      } else {
+        categoryIds.add(cat.id);
+      }
+      if (!cat.title || typeof cat.title !== 'string' || !cat.title.trim()) {
+        errors.push(`القسم (${cat.id || i + 1}) لا يحتوي على عنوان.`);
+      }
+    }
+  }
+
+  if (!Array.isArray(data.articles)) {
+    errors.push('مصفوفة المقالات (articles) مفقودة أو غير صالحة.');
+  }
+
+  const articleIds = new Set();
+  if (Array.isArray(data.articles)) {
+    for (let i = 0; i < data.articles.length; i++) {
+      const art = data.articles[i];
+      if (!art || typeof art !== 'object') {
+        errors.push(`المقال رقم ${i + 1} غير صالح.`);
+        continue;
+      }
+      if (!art.id || typeof art.id !== 'string' || !art.id.trim()) {
+        errors.push(`المقال رقم ${i + 1} لا يحتوي على معرّف ID صالح.`);
+      } else if (articleIds.has(art.id)) {
+        errors.push(`معرّف المقال (${art.id}) مكرر.`);
+      } else {
+        articleIds.add(art.id);
+      }
+
+      if (!art.categoryId || !categoryIds.has(art.categoryId)) {
+        errors.push(`المقال "${art.title || art.id}" يشير لقسم غير موجود (${art.categoryId || 'فارغ'}).`);
+      }
+
+      if (!art.title || typeof art.title !== 'string' || !art.title.trim()) {
+        errors.push(`المقال (${art.id}) لا يحتوي على عنوان.`);
+      }
+
+      if (!art.question || typeof art.question !== 'string' || !art.question.trim()) {
+        errors.push(`المقال (${art.id}) لا يحتوي على سؤال.`);
+      }
+
+      if (!art.answer || typeof art.answer !== 'object' || !art.answer.text || !art.answer.text.trim()) {
+        errors.push(`المقال "${art.title || art.id}" لا يحتوي على نص إجابة معتمد.`);
+      }
+
+      if (art.answer?.links && Array.isArray(art.answer.links)) {
+        for (const link of art.answer.links) {
+          if (!isValidUrl(link.url)) {
+            errors.push(`المقال "${art.title || art.id}" يحتوي على رابط غير آمن أو غير صالح (${link.url || 'فارغ'}).`);
+          }
+        }
+      }
+
+      if (!art.keywords || !Array.isArray(art.keywords) || art.keywords.length === 0) {
+        warnings.push(`المقال "${art.title || art.id}" لا يحتوي على كلمات مفتاحية.`);
+      }
+    }
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+    warnings
+  };
+}
+
+// Common Egyptian conversational filler words & stop words
+const ARABIC_STOP_WORDS = new Set([
+  'في', 'من', 'على', 'علي', 'عن', 'الى', 'الي', 'مع', 'هل', 'هو', 'هي', 'لو',
+  'سمحت', 'منك', 'عايز', 'عايزه', 'عاوز', 'عاوزه', 'محتاج', 'محتاجه', 'ممكن',
+  'بدي', 'اريد', 'ابغى', 'ازاي', 'ازاى', 'كيف', 'طريقة', 'طريقه', 'فين', 'كام', 'بكام'
+]);
+
+// Helper to match token using Arabic word boundaries rather than loose character substrings
+export function matchTokenInText(token, text) {
+  if (!token || !text) return false;
+  if (token === text) return true;
+  const words = text.split(' ');
+  return words.some(w => {
+    if (w === token) return true;
+    if (token.length <= 3) {
+      return w === 'ال' + token || ('ال' + w) === token;
+    }
+    return w.includes(token);
+  });
+}
+
 // Search Engine implementation
 export function searchKnowledgeBase(query, knowledge) {
   if (!query || !query.trim() || !knowledge || !Array.isArray(knowledge.articles)) {
@@ -64,6 +233,10 @@ export function searchKnowledgeBase(query, knowledge) {
   const rawNormQuery = normalizeArabic(query);
   const queryTokens = rawNormQuery.split(' ').filter(t => t.length > 0);
   if (queryTokens.length === 0) return [];
+
+  // Identify meaningful content tokens vs stop words
+  const contentTokens = queryTokens.filter(t => !ARABIC_STOP_WORDS.has(t));
+  const effectiveTokens = contentTokens.length > 0 ? contentTokens : queryTokens;
 
   const enabledArticles = knowledge.articles.filter(a => a.enabled !== false);
   const scored = [];
@@ -78,20 +251,20 @@ export function searchKnowledgeBase(query, knowledge) {
     const synonyms = (article.synonyms || []).map(s => normalizeArabic(s));
 
     // 1. Exact match on title or main question (Highest priority)
-    if (normTitle === rawNormQuery) score += 150;
-    else if (normQuestion === rawNormQuery) score += 140;
+    if (normTitle === rawNormQuery) score += 160;
+    else if (normQuestion === rawNormQuery) score += 150;
 
     // 2. Full phrase inclusion in title or question
-    if (normTitle.includes(rawNormQuery)) score += 80;
-    if (normQuestion.includes(rawNormQuery)) score += 70;
+    if (normTitle.includes(rawNormQuery)) score += 85;
+    if (normQuestion.includes(rawNormQuery)) score += 75;
 
     // 3. Alternative Questions matches
     for (const alt of altQuestions) {
       if (alt === rawNormQuery) {
-        score += 120;
+        score += 130;
         break;
-      } else if (alt.includes(rawNormQuery)) {
-        score += 60;
+      } else if (alt.includes(rawNormQuery) || rawNormQuery.includes(alt)) {
+        score += 70;
         break;
       }
     }
@@ -99,76 +272,121 @@ export function searchKnowledgeBase(query, knowledge) {
     // 4. Keywords and Synonyms exact / partial matches
     for (const kw of keywords) {
       if (kw === rawNormQuery) {
-        score += 100;
-      } else if (kw.includes(rawNormQuery) || rawNormQuery.includes(kw)) {
+        score += 110;
+      } else if (kw.includes(rawNormQuery) || (rawNormQuery.length > 3 && rawNormQuery.includes(kw))) {
         score += 55;
       }
     }
 
     for (const syn of synonyms) {
       if (syn === rawNormQuery) {
-        score += 90;
-      } else if (syn.includes(rawNormQuery) || rawNormQuery.includes(syn)) {
+        score += 95;
+      } else if (syn.includes(rawNormQuery) || (rawNormQuery.length > 3 && rawNormQuery.includes(syn))) {
         score += 50;
       }
     }
 
-    // 5. Token-by-token scoring
-    let tokenMatches = 0;
+    // 5. Token-by-token scoring with content-weighting and word boundaries
+    let matchedTokenCount = 0;
+    let matchedContentTokenCount = 0;
+
     for (const token of queryTokens) {
+      const isStop = ARABIC_STOP_WORDS.has(token);
       let matchedToken = false;
 
       // Check title & question
-      if (normTitle.includes(token)) {
-        score += 35;
+      if (matchTokenInText(token, normTitle)) {
+        score += isStop ? 10 : 35;
         matchedToken = true;
       }
-      if (normQuestion.includes(token)) {
-        score += 30;
+      if (matchTokenInText(token, normQuestion)) {
+        score += isStop ? 8 : 30;
         matchedToken = true;
+      }
+
+      // Check alternative questions
+      for (const alt of altQuestions) {
+        if (matchTokenInText(token, alt)) {
+          score += isStop ? 10 : 30;
+          matchedToken = true;
+          break;
+        }
       }
 
       // Check keywords/synonyms
       for (const kw of keywords) {
-        if (kw.includes(token)) {
-          score += 25;
+        if (matchTokenInText(token, kw)) {
+          score += isStop ? 8 : 25;
           matchedToken = true;
+          break;
         }
       }
       for (const syn of synonyms) {
-        if (syn.includes(token)) {
-          score += 20;
+        if (matchTokenInText(token, syn)) {
+          score += isStop ? 6 : 20;
           matchedToken = true;
+          break;
         }
       }
 
       // Check answer text
-      if (normAnswer.includes(token)) {
+      if (!isStop && matchTokenInText(token, normAnswer)) {
         score += 12;
         matchedToken = true;
       }
 
-      // Typo tolerance check for tokens with length >= 4
-      if (!matchedToken && token.length >= 4) {
+      // Typo tolerance check for meaningful tokens of length >= 4
+      if (!matchedToken && !isStop && token.length >= 4) {
+        const maxDist = token.length >= 6 ? 2 : 1;
         const titleWords = normTitle.split(' ');
         for (const tw of titleWords) {
-          if (tw.length >= 4 && levenshteinDistance(token, tw) <= 1) {
+          if (tw.length >= 4 && levenshteinDistance(token, tw) <= maxDist) {
             score += 20;
             matchedToken = true;
             break;
           }
         }
+
+        if (!matchedToken) {
+          for (const kw of keywords) {
+            if (kw.length >= 4 && levenshteinDistance(token, kw) <= maxDist) {
+              score += 18;
+              matchedToken = true;
+              break;
+            }
+          }
+        }
       }
 
-      if (matchedToken) tokenMatches++;
+      if (matchedToken) {
+        matchedTokenCount++;
+        if (!isStop) matchedContentTokenCount++;
+      }
     }
 
-    // Bonus for matching all tokens
-    if (tokenMatches === queryTokens.length && queryTokens.length > 1) {
-      score += 40;
+    // Bonus for matching all meaningful tokens
+    if (contentTokens.length > 0 && matchedContentTokenCount === contentTokens.length) {
+      score += 45;
+    } else if (matchedTokenCount === queryTokens.length && queryTokens.length > 1) {
+      score += 35;
     }
 
-    if (score > 10) {
+    // Avoid returning unrelated answers merely because they share one common word
+    const hasPhraseMatch = (
+      normTitle.includes(rawNormQuery) ||
+      normQuestion.includes(rawNormQuery) ||
+      altQuestions.some(alt => alt.includes(rawNormQuery) || rawNormQuery.includes(alt)) ||
+      keywords.some(kw => kw.includes(rawNormQuery) || rawNormQuery.includes(kw)) ||
+      synonyms.some(syn => syn.includes(rawNormQuery) || rawNormQuery.includes(syn))
+    );
+
+    // If query contains 2 or more content tokens, discard single-token accidental hits
+    if (contentTokens.length >= 2 && matchedContentTokenCount < 2 && !hasPhraseMatch) {
+      score = 0;
+    }
+
+    // Strict threshold: score must be at least 20 to avoid noisy unrelated matches
+    if (score >= 20) {
       scored.push({ article, score });
     }
   }
@@ -388,7 +606,10 @@ export class DandyBabWidget extends BaseElement {
 
   openWhatsApp(customText) {
     const url = this.getWhatsAppUrl(customText);
-    window.open(url, '_blank', 'noopener,noreferrer');
+    const safe = sanitizeUrl(url);
+    if (safe && safe !== '#') {
+      window.open(safe, '_blank', 'noopener,noreferrer');
+    }
   }
 
   handleSearchInput(e) {
@@ -748,7 +969,7 @@ export class DandyBabWidget extends BaseElement {
             ${activeArticle.answer?.links && activeArticle.answer.links.length > 0 ? `
               <div class="bab-links-wrap">
                 ${activeArticle.answer.links.map(link => `
-                  <a href="${this.escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer" class="bab-action-link">
+                  <a href="${this.escapeHtml(sanitizeUrl(link.url, settings.officialBaseUrl))}" target="_blank" rel="noopener noreferrer" class="bab-action-link">
                     <span>${this.escapeHtml(link.title)}</span>
                     <span class="bab-action-link-icon">${ICONS.externalLink}</span>
                   </a>

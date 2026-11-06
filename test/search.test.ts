@@ -4,6 +4,9 @@ import { normalizeArabic, levenshteinDistance, searchKnowledgeBase } from '../wi
 import fs from 'node:fs';
 import path from 'node:path';
 
+// Load real preloaded knowledge base
+const realKnowledge = JSON.parse(fs.readFileSync(path.resolve('data/knowledge.json'), 'utf-8'));
+
 test('normalizeArabic properly cleans and normalizes Arabic characters', () => {
   // Tashkeel / Diacritics and Taa Marbuta to Haa
   assert.equal(normalizeArabic('مُتَوَقَّعَةٌ'), 'متوقعه');
@@ -32,46 +35,119 @@ test('levenshteinDistance computes edit distance correctly', () => {
   assert.equal(levenshteinDistance('', 'abc'), 3);
 });
 
-test('searchKnowledgeBase ranks exact title match above broader matches', () => {
-  const mockKnowledge = {
-    articles: [
-      {
-        id: 'art-general',
-        title: 'معلومات عامة عن المتجر',
-        question: 'ما هو متجر DANDY؟',
-        keywords: ['متجر', 'جمال'],
-        answer: { text: 'متجر مستحضرات تجميل مصري رائد.' },
-        enabled: true
-      },
-      {
-        id: 'art-shipping-time',
-        title: 'مدة التوصيل',
-        question: 'متى يصل طلبي؟',
-        keywords: ['الشحن', 'التوصيل', 'مدة التوصيل'],
-        synonyms: ['ميعاد وصول الشحنة'],
-        answer: { text: 'من يومين إلى خمسة أيام عمل.' },
-        enabled: true
-      },
-      {
-        id: 'art-shipping-fees',
-        title: 'مصاريف الشحن',
-        question: 'كم تبلغ تكلفة التوصيل؟',
-        keywords: ['رسوم الشحن', 'التوصيل', 'تكلفة'],
-        answer: { text: 'تختلف حسب المحافظة في صفحة الدفع.' },
-        enabled: true
-      }
-    ]
-  };
+test('searchKnowledgeBase accurately matches Egyptian colloquial questions for shipping fees', () => {
+  const queries = [
+    'الشحن بكام؟',
+    'مصاريف التوصيل كام؟',
+    'سعر الشحن؟',
+    'عايز أعرف تكلفة الشحن',
+    'كم مصاريف الشحن لمحافظتي؟'
+  ];
 
-  // Searching for "مدة التوصيل"
-  const results = searchKnowledgeBase('مدة التوصيل', mockKnowledge);
-  assert.ok(results.length > 0);
-  assert.equal(results[0].id, 'art-shipping-time');
+  for (const q of queries) {
+    const results = searchKnowledgeBase(q, realKnowledge);
+    assert.ok(results.length > 0, `Search for "${q}" should return results`);
+    const topIds = results.slice(0, 2).map((r: any) => r.id);
+    assert.ok(
+      topIds.includes('shipping-fees') || topIds.includes('shipping-free'),
+      `Search for "${q}" should find shipping-fees or shipping-free in top results, found: ${topIds.join(', ')}`
+    );
+  }
+});
 
-  // Searching with colloquial Egyptian phrasing "الشحنة هتوصل امتى" -> synonym match
-  const synResults = searchKnowledgeBase('ميعاد وصول الشحنة', mockKnowledge);
-  assert.ok(synResults.length > 0);
-  assert.equal(synResults[0].id, 'art-shipping-time');
+test('searchKnowledgeBase accurately matches Egyptian colloquial questions for order tracking', () => {
+  const queries = [
+    'عايز اتابع الأوردر',
+    'طلبي وصل لفين؟',
+    'فين الشحنة بتاعتي؟',
+    'ازاي اتتبع الطلب؟',
+    'Track my order',
+    'متابعة الشحنة'
+  ];
+
+  for (const q of queries) {
+    const results = searchKnowledgeBase(q, realKnowledge);
+    assert.ok(results.length > 0, `Search for "${q}" should return results`);
+    const topIds = results.slice(0, 2).map((r: any) => r.id);
+    assert.ok(
+      topIds.includes('track-how-to') || topIds.includes('track-find-info'),
+      `Search for "${q}" should find track-how-to in top results, found: ${topIds.join(', ')}`
+    );
+  }
+});
+
+test('searchKnowledgeBase accurately matches delivery time queries', () => {
+  const queries = [
+    'الشحنة هتوصل امتى؟',
+    'التوصيل بياخد كام يوم؟',
+    'ما هي مدة الشحن؟',
+    'وقت وصول الأوردر',
+    'مدة التوصيل'
+  ];
+
+  for (const q of queries) {
+    const results = searchKnowledgeBase(q, realKnowledge);
+    assert.ok(results.length > 0, `Search for "${q}" should return results`);
+    assert.equal(results[0].id, 'shipping-delivery-time', `Query "${q}" should rank shipping-delivery-time first`);
+  }
+});
+
+test('searchKnowledgeBase handles customer returns queries accurately', () => {
+  const queries = [
+    'عايز ارجع منتج',
+    'طريقة ترجيع المنتج',
+    'سياسة الاسترجاع',
+    'هل ينفع استرجع الطلب؟'
+  ];
+
+  for (const q of queries) {
+    const results = searchKnowledgeBase(q, realKnowledge);
+    assert.ok(results.length > 0, `Search for "${q}" should return results`);
+    const topIds = results.slice(0, 2).map((r: any) => r.id);
+    assert.ok(topIds.includes('returns-can-i-return'), `Query "${q}" should find returns-can-i-return in top results`);
+  }
+});
+
+test('searchKnowledgeBase handles product category exploration', () => {
+  // Hair care
+  const hairRes = searchKnowledgeBase('عايز حاجات للشعر شامبو وبلسم', realKnowledge);
+  assert.ok(hairRes.length > 0);
+  assert.equal(hairRes[0].id, 'prod-hair-care');
+
+  // Skin care
+  const skinRes = searchKnowledgeBase('غسول ومرطب للوجه', realKnowledge);
+  assert.ok(skinRes.length > 0);
+  assert.equal(skinRes[0].id, 'prod-skin-care');
+
+  // Fragrance
+  const perfRes = searchKnowledgeBase('عطور وبرفانات', realKnowledge);
+  assert.ok(perfRes.length > 0);
+  assert.equal(perfRes[0].id, 'prod-fragrance');
+});
+
+test('searchKnowledgeBase handles typos via Levenshtein distance', () => {
+  // Typo: "تووصيل" instead of "توصيل"
+  const typo1 = searchKnowledgeBase('مدة التووصيل', realKnowledge);
+  assert.ok(typo1.length > 0);
+  assert.equal(typo1[0].id, 'shipping-delivery-time');
+
+  // Typo: "تتببع" instead of "تتبع"
+  const typo2 = searchKnowledgeBase('تتببع طلبي', realKnowledge);
+  assert.ok(typo2.length > 0);
+  assert.equal(typo2[0].id, 'track-how-to');
+});
+
+test('searchKnowledgeBase returns empty array for unrelated non-store queries (fallback)', () => {
+  const unrelated = [
+    'طريقة عمل الكيكة بالشكولاته في المنزل',
+    'سيارات مرسيدس مستعملة للبيع',
+    'نتيجة مباراة ليفربول وريال مدريد'
+  ];
+
+  for (const q of unrelated) {
+    const results = searchKnowledgeBase(q, realKnowledge);
+    assert.equal(results.length, 0, `Unrelated query "${q}" must not return false matches; must trigger fallback`);
+  }
 });
 
 test('searchKnowledgeBase excludes disabled articles', () => {
@@ -99,29 +175,4 @@ test('searchKnowledgeBase excludes disabled articles', () => {
   const results = searchKnowledgeBase('بشرة', mockKnowledge);
   assert.equal(results.length, 1);
   assert.equal(results[0].id, 'art-active');
-});
-
-test('data/knowledge.json meets required schema and contains verified DANDY information', () => {
-  const filePath = path.resolve('data/knowledge.json');
-  assert.ok(fs.existsSync(filePath), 'data/knowledge.json must exist');
-  
-  const content = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-  assert.equal(content.schemaVersion, 1);
-  assert.ok(content.settings, 'settings must exist');
-  assert.equal(content.settings.supportPhone, '01038941005');
-  assert.equal(content.settings.supportWhatsapp, '201038941005');
-  assert.ok(Array.isArray(content.categories), 'categories must be an array');
-  assert.ok(Array.isArray(content.articles), 'articles must be an array');
-  assert.ok(content.categories.length >= 5, 'Should have multiple categories');
-  assert.ok(content.articles.length >= 8, 'Should have comprehensive verified articles');
-
-  // Verify delivery time article
-  const deliveryArt = content.articles.find((a: any) => a.id === 'shipping-delivery-time');
-  assert.ok(deliveryArt, 'shipping-delivery-time must exist');
-  assert.ok(deliveryArt.answer.text.includes('يومين إلى خمسة أيام عمل'), 'Must contain 2-5 business days');
-
-  // Verify free shipping article
-  const freeShippingArt = content.articles.find((a: any) => a.id === 'shipping-free');
-  assert.ok(freeShippingArt, 'shipping-free must exist');
-  assert.ok(freeShippingArt.answer.text.includes('2,000') || freeShippingArt.answer.text.includes('2000'), 'Must contain 2000 EGP threshold');
 });

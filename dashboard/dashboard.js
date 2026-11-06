@@ -4,7 +4,7 @@
  * Independent vanilla JS module for DANDY store managers
  */
 
-import { normalizeArabic } from '../widget/bab-widget.js';
+import { normalizeArabic, validateKnowledgeData, isValidUrl, sanitizeUrl } from '../widget/bab-widget.js';
 
 const STORAGE_KEY = 'dandy_bab_knowledge_data';
 const LAST_SAVED_KEY = 'dandy_bab_last_saved';
@@ -111,52 +111,7 @@ class BabDashboard {
   }
 
   validateData() {
-    const errors = [];
-    const warnings = [];
-
-    if (!this.knowledge) return { isValid: false, errors: ['لا توجد بيانات'], warnings: [] };
-
-    const { categories = [], articles = [] } = this.knowledge;
-    const categoryIds = new Set(categories.map(c => c.id));
-    const articleIds = new Set();
-
-    // Check Duplicate Categories
-    const catCounts = {};
-    for (const c of categories) {
-      if (!c.id) errors.push('يوجد قسم بدون معرّف ID فريد.');
-      if (!c.title) errors.push(`القسم "${c.id || 'بدون اسم'}" بدون عنوان.`);
-      catCounts[c.id] = (catCounts[c.id] || 0) + 1;
-    }
-    for (const [id, count] of Object.entries(catCounts)) {
-      if (count > 1) errors.push(`معرّف القسم (${id}) مكرر ${count} مرات.`);
-    }
-
-    // Check Articles
-    for (const a of articles) {
-      if (!a.id) errors.push('يوجد مقال بدون معرّف ID.');
-      if (articleIds.has(a.id)) {
-        errors.push(`معرّف المقال (${a.id}) مكرر.`);
-      } else {
-        articleIds.add(a.id);
-      }
-
-      if (!a.title) errors.push(`المقال (${a.id}) بدون عنوان.`);
-      if (!a.categoryId || !categoryIds.has(a.categoryId)) {
-        warnings.push(`المقال "${a.title || a.id}" مرتبط بقسم غير موجود (${a.categoryId || 'فارغ'}).`);
-      }
-      if (!a.answer || !a.answer.text || !a.answer.text.trim()) {
-        warnings.push(`المقال "${a.title || a.id}" بدون نص إجابة.`);
-      }
-      if (!a.keywords || a.keywords.length === 0) {
-        warnings.push(`المقال "${a.title || a.id}" لا يحتوي على كلمات مفتاحية للبحث.`);
-      }
-    }
-
-    return {
-      isValid: errors.length === 0,
-      errors,
-      warnings
-    };
+    return validateKnowledgeData(this.knowledge);
   }
 
   setupNavigation() {
@@ -976,6 +931,26 @@ class BabDashboard {
               </ul>
             </div>
           </div>
+          <!-- Ready-made Egyptian Test Questions -->
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <h3>⚡ أسئلة اختبار وتجربة سريعة (باللهجة المصرية)</h3>
+            </div>
+            <div class="dash-card-body" style="font-size: 13px;">
+              <p style="margin-bottom: 10px; color: var(--dandy-muted);">انقري على أي عبارة لتجربة استجابة المساعد الفورية في شاشة المحاكاة:</p>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <button type="button" class="btn btn-secondary btn-sm test-query-chip" data-query="الشحن بكام؟">🚚 الشحن بكام؟</button>
+                <button type="button" class="btn btn-secondary btn-sm test-query-chip" data-query="طلبي وصل لفين؟">🔍 طلبي وصل لفين؟</button>
+                <button type="button" class="btn btn-secondary btn-sm test-query-chip" data-query="شحن مجاني">🎁 شحن مجاني</button>
+                <button type="button" class="btn btn-secondary btn-sm test-query-chip" data-query="مدة التوصيل">⏱️ مدة التوصيل</button>
+                <button type="button" class="btn btn-secondary btn-sm test-query-chip" data-query="عايز ارجع منتج">🔄 عايز ارجع منتج</button>
+                <button type="button" class="btn btn-secondary btn-sm test-query-chip" data-query="نسيت كلمة المرور">🔑 نسيت كلمة المرور</button>
+                <button type="button" class="btn btn-secondary btn-sm test-query-chip" data-query="منتجات العناية بالبشرة">✨ العناية بالبشرة</button>
+                <button type="button" class="btn btn-secondary btn-sm test-query-chip" data-query="مواعيد العمل الرسمية">🕒 مواعيد العمل</button>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <!-- Phone / Mock Frame with Embedded Widget -->
@@ -1002,6 +977,19 @@ class BabDashboard {
     document.getElementById('sync-preview-now-btn')?.addEventListener('click', () => {
       this.syncPreviewWidget();
       alert('تمت مزامنة بيانات المعاينة بنجاح!');
+    });
+
+    // Test query chips
+    this.contentEl.querySelectorAll('.test-query-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const query = chip.getAttribute('data-query');
+        const widget = document.getElementById('dash-preview-widget');
+        if (widget) {
+          widget.toggleWidget(true);
+          widget.searchQuery = query;
+          widget.executeSearch();
+        }
+      });
     });
 
     // Inject data into preview widget
@@ -1100,6 +1088,12 @@ class BabDashboard {
   }
 
   exportKnowledgeJson() {
+    const validation = validateKnowledgeData(this.knowledge);
+    if (!validation.isValid) {
+      alert('لا يمكن التصدير لوجود أخطاء في البيانات المكتشفة:\n• ' + validation.errors.join('\n• '));
+      return;
+    }
+
     const jsonStr = JSON.stringify(this.knowledge, null, 2);
     const blob = new Blob([jsonStr], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -1120,27 +1114,33 @@ class BabDashboard {
     const reader = new FileReader();
     reader.onload = (event) => {
       try {
-        const parsed = JSON.parse(event.target.result);
-        if (!parsed || typeof parsed !== 'object') {
-          throw new Error('ملف JSON غير صالح.');
-        }
-        if (!parsed.categories || !Array.isArray(parsed.categories)) {
-          throw new Error('الملف لا يحتوي على مصفوفة الأقسام (categories).');
-        }
-        if (!parsed.articles || !Array.isArray(parsed.articles)) {
-          throw new Error('الملف لا يحتوي على مصفوفة المقالات (articles).');
+        let parsed;
+        try {
+          parsed = JSON.parse(event.target.result);
+        } catch (jsonErr) {
+          throw new Error('ملف JSON غير صالح أو به خطأ تركيبي (Syntax Error).');
         }
 
-        // Successfully verified
+        const validation = validateKnowledgeData(parsed);
+        if (!validation.isValid) {
+          throw new Error('فشل التحقق من صحة المخطط والأمان:<br>• ' + validation.errors.join('<br>• '));
+        }
+
+        // Successfully verified: NEVER partially overwrite if invalid
         this.knowledge = parsed;
         this.saveWorkingData();
         if (statusEl) {
-          statusEl.innerHTML = `<span style="color: #10b981; font-weight: 700;">✅ تم استيراد الملف وحفظه بنجاح! تم تحديث ${parsed.articles.length} مقال و ${parsed.categories.length} قسم.</span>`;
+          statusEl.innerHTML = `<span style="color: #10b981; font-weight: 700;">✅ تم استيراد الملف وحفظه بنجاح! تم اعتماد ${parsed.articles.length} مقال و ${parsed.categories.length} قسم.</span>`;
         }
         setTimeout(() => this.render(), 1200);
       } catch (err) {
         if (statusEl) {
-          statusEl.innerHTML = `<span style="color: #dc2626; font-weight: 700;">❌ فشل الاستيراد: ${this.escape(err.message)}</span>`;
+          statusEl.innerHTML = `
+            <div style="color: #dc2626; font-size: 13px; line-height: 1.6; background: #fef2f2; padding: 12px; border-radius: 8px; border: 1px solid #fecaca; margin-top: 8px;">
+              <strong>❌ تعذر الاستيراد (تم إلغاء العملية والاحتفاظ بالبيانات السابقة):</strong><br>
+              ${err.message}
+            </div>
+          `;
         }
       }
     };
@@ -1598,6 +1598,10 @@ class BabDashboard {
         const title = div.querySelector('.link-title')?.value.trim();
         const url = div.querySelector('.link-url')?.value.trim();
         if (title && url) {
+          if (!isValidUrl(url)) {
+            alert(`الرابط "${url}" غير آمن أو غير صالح! يُرجى استخدام رابط يبدأ بـ https:// أو مسار داخلي يبدأ بـ /.`);
+            return;
+          }
           updatedLinks.push({ title, url, isExternal: url.startsWith('http') });
         }
       });

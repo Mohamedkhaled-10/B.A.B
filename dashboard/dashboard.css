@@ -649,7 +649,8 @@ body {
   background: #fffbfd;
   border-radius: 18px;
   overflow: hidden;
-  min-height: 620px;
+  height: 680px;
+  min-height: 680px;
   border: 1px solid #f3e8ee;
   transform: translateZ(0); /* Traps position: fixed inside this container */
 }
