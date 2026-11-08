@@ -5,12 +5,14 @@
     "assistantSubtitle": "مساعد DANDY الذكي",
     "brandName": "DANDY",
     "welcomeMessage": "أهلاً بكِ في DANDY! ✨ أنا B.A.B مساعدكِ الذكي لمساعدتكِ في تصفح المنتجات، معرفة تفاصيل الشحن والتوصيل، أو سياسات المتجر. كيف أقدر أساعدكِ اليوم؟",
-    "searchPlaceholder": "ابحثي عن سؤالك (مثل: مدة التوصيل، الشحن المجاني، تتبع الطلب...)",
+    "searchPlaceholder": "ابحث عن سؤال أو موضوع...",
     "supportPhone": "01038941005",
     "supportWhatsapp": "201038941005",
     "supportWhatsappText": "مرحبًا، أحتاج إلى مساعدة بخصوص متجر DANDY.",
     "supportHours": "يوميًا من 10:00 صباحًا حتى 10:00 مساءً (بتوقيت القاهرة)",
     "officialBaseUrl": "https://dandy-ebon.vercel.app",
+    "brandLogo": "/assets/bab/images/dandy-logo.png",
+    "brandLogoWhite": "/assets/bab/images/dandy-logo-white.png",
     "theme": {
       "primary": "#fe5d9f",
       "secondary": "#db2777",
@@ -24,37 +26,37 @@
   "quickReplies": [
     {
       "id": "qr-shipping-time",
-      "label": "🚚 مدة التوصيل",
+      "label": "مدة التوصيل",
       "articleId": "shipping-delivery-time",
       "action": "article"
     },
     {
       "id": "qr-shipping-free",
-      "label": "🎁 الشحن المجاني",
+      "label": "الشحن المجاني",
       "articleId": "shipping-free",
       "action": "article"
     },
     {
       "id": "qr-track-order",
-      "label": "🔍 تتبع طلبي",
+      "label": "تتبع طلبي",
       "articleId": "track-how-to",
       "action": "article"
     },
     {
       "id": "qr-browse-products",
-      "label": "🛍️ تصفح المنتجات",
+      "label": "تصفح المنتجات",
       "articleId": "prod-find-product",
       "action": "article"
     },
     {
       "id": "qr-special-offers",
-      "label": "🏷️ العروض الحالية",
+      "label": "العروض الحالية",
       "articleId": "prod-offers",
       "action": "article"
     },
     {
       "id": "qr-whatsapp",
-      "label": "💬 محادثة واتساب",
+      "label": "محادثة واتساب",
       "action": "whatsapp"
     }
   ],

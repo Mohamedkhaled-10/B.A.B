@@ -163,8 +163,8 @@
 
   <!-- Master Portal Navigation Bar -->
   <header class="portal-nav-bar">
-    <a href="/index.html" class="portal-brand">
-      <div class="portal-brand-badge">B</div>
+    <a href="/index.html" class="portal-brand" title="بوابة مساعد DANDY الرسمية">
+      <img src="/assets/bab/images/dandy-logo-white.png" alt="DANDY" height="30" style="max-height: 30px; width: auto; object-fit: contain; margin-left: 8px;" />
       <div>
         <div style="font-weight: 800; font-size: 15px; letter-spacing: -0.2px;">B.A.B — Beauty Assistant Bot</div>
         <div style="font-size: 10.5px; color: var(--dandy-border);">نظام الدعم الفني الذكي المعتمد لمتجر DANDY</div>
@@ -311,6 +311,10 @@ http://localhost:8000</div>
       });
     });
   </script>
+
+  <!-- DANDY B.A.B Customer Support Assistant Widget -->
+  <dandy-bab-widget knowledge-src="/assets/bab/data/knowledge.json"></dandy-bab-widget>
+  <script type="module" src="/assets/bab/widget/bab-widget.js"></script>
 
 </body>
 </html>

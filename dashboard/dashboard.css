@@ -649,8 +649,16 @@ body {
   background: #fffbfd;
   border-radius: 18px;
   overflow: hidden;
-  height: 680px;
-  min-height: 680px;
+  height: auto;
+  min-height: 600px;
   border: 1px solid #f3e8ee;
   transform: translateZ(0); /* Traps position: fixed inside this container */
+  display: flex;
+  flex-direction: column;
+}
+
+.preview-stage dandy-bab-widget {
+  width: 100%;
+  display: block;
+  flex: 1 1 auto;
 }
